@@ -3,6 +3,11 @@ import { initializeLucia } from "@/lib/auth";
 import { generateId } from "@/lib/utils";
 import { getCloudflareEnv, D1Database } from "@/lib/d1-types";
 
+interface ChildRequest {
+  name: string;
+  birthDate: string;
+}
+
 export const runtime = "edge";
 
 async function getAuthUser(request: NextRequest, db: D1Database) {
@@ -60,7 +65,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, birthDate } = await request.json();
+  const { name, birthDate }: ChildRequest = await request.json();
 
   if (!name || !birthDate) {
     return NextResponse.json(

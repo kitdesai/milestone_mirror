@@ -14,6 +14,14 @@ interface User {
   emailVerified: boolean;
 }
 
+interface SessionResponse {
+  user: User | null;
+}
+
+interface ApiError {
+  error: string;
+}
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -32,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const refreshSession = async () => {
     try {
       const res = await fetch("/api/auth/session");
-      const data = await res.json();
+      const data: SessionResponse = await res.json();
       setUser(data.user);
     } catch {
       setUser(null);
@@ -53,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!res.ok) {
-      const error = await res.json();
+      const error: ApiError = await res.json();
       throw new Error(error.error || "Login failed");
     }
 
@@ -68,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!res.ok) {
-      const error = await res.json();
+      const error: ApiError = await res.json();
       throw new Error(error.error || "Registration failed");
     }
 

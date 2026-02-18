@@ -10,6 +10,10 @@ interface ImageUploaderProps {
   onClose: () => void;
 }
 
+interface ApiError {
+  error: string;
+}
+
 export function ImageUploader({
   frameId,
   childId,
@@ -92,7 +96,7 @@ export function ImageUploader({
       });
 
       if (!res.ok) {
-        const data = await res.json();
+        const data: ApiError = await res.json();
         throw new Error(data.error || "Upload failed");
       }
 

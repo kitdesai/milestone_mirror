@@ -3,6 +3,11 @@ import { initializeLucia } from "@/lib/auth";
 import { generateId } from "@/lib/utils";
 import { getCloudflareEnv, D1Database } from "@/lib/d1-types";
 
+interface FrameRequest {
+  title: string;
+  description?: string;
+}
+
 export const runtime = "edge";
 
 async function getAuthUser(request: NextRequest, db: D1Database) {
@@ -105,7 +110,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { title, description } = await request.json();
+  const { title, description }: FrameRequest = await request.json();
 
   if (!title) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });

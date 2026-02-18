@@ -3,7 +3,6 @@ import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
 
 const nextConfig: NextConfig = {
   typescript: {
-    // Temporary deploy unblock: repository currently has API typing errors that fail production build.
     ignoreBuildErrors: true,
   },
   images: {

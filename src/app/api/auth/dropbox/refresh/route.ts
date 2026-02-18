@@ -1,11 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 
+interface RefreshRequest {
+  refresh_token: string;
+}
+
+interface DropboxTokenResponse {
+  access_token: string;
+  expires_in: number;
+  token_type: string;
+}
+
 const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
 export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
-    const { refresh_token } = await request.json();
+    const { refresh_token }: RefreshRequest = await request.json();
 
     if (!refresh_token) {
       return NextResponse.json(
@@ -46,7 +56,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const tokens = await tokenResponse.json();
+    const tokens: DropboxTokenResponse = await tokenResponse.json();
     const expiresAt = Date.now() + (tokens.expires_in || 14400) * 1000;
 
     return NextResponse.json({

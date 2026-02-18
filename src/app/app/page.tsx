@@ -59,7 +59,7 @@ export default function AppPage() {
     try {
       const res = await fetch("/api/children");
       if (res.ok) {
-        const data = await res.json();
+        const data: { children: Child[] } = await res.json();
         setChildren(data.children || []);
       }
     } catch (err) {
@@ -374,7 +374,7 @@ export default function AppPage() {
           </div>
         ) : (
           /* Frames Tab */
-          <div className="max-w-4xl mx-auto">
+          <div>
             {isLoadingChildren ? (
               <div className="flex justify-center py-12">
                 <div className="w-8 h-8 border-4 border-peach-200 border-t-peach-500 rounded-full animate-spin" />

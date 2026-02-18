@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { initializeLucia } from "@/lib/auth";
 import { getCloudflareEnv, D1Database } from "@/lib/d1-types";
 
+interface ChildRequest {
+  name: string;
+  birthDate: string;
+}
+
 export const runtime = "edge";
 
 async function getAuthUser(request: NextRequest, db: D1Database) {
@@ -35,7 +40,7 @@ export async function PUT(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { name, birthDate } = await request.json();
+  const { name, birthDate }: ChildRequest = await request.json();
   const { id: childId } = await params;
 
   const result = await db

@@ -3,11 +3,16 @@ import { initializeLucia } from "@/lib/auth";
 import { verifyPassword } from "@/lib/password";
 import { getCloudflareEnv } from "@/lib/d1-types";
 
+interface AuthRequest {
+  email: string;
+  password: string;
+}
+
 export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const { email, password }: AuthRequest = await request.json();
 
     if (!email || !password) {
       return NextResponse.json(

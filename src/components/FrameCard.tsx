@@ -42,18 +42,20 @@ export function FrameCard({
   };
 
   const currentImage = frame.images[currentIndex];
-  const useApiFallback = currentImage
-    ? apiFallbackImageIds.has(currentImage.id)
-    : false;
-  const currentImageSrc =
-    currentImage &&
-    (useApiFallback
-      ? toImageApiPath(currentImage.imageKey)
-      : currentImage.imageUrl?.startsWith("http://") ||
-          currentImage.imageUrl?.startsWith("https://") ||
-          currentImage.imageUrl?.startsWith("/api/images/")
-        ? currentImage.imageUrl
-        : toImageApiPath(currentImage.imageKey));
+
+  const getImageSrc = (image: typeof currentImage) => {
+    if (!image) return "";
+    const useApiFallback = apiFallbackImageIds.has(image.id);
+    return useApiFallback
+      ? toImageApiPath(image.imageKey)
+      : image.imageUrl?.startsWith("http://") ||
+          image.imageUrl?.startsWith("https://") ||
+          image.imageUrl?.startsWith("/api/images/")
+        ? image.imageUrl
+        : toImageApiPath(image.imageKey);
+  };
+
+  const currentImageSrc = getImageSrc(currentImage);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-cream-200 overflow-hidden">
@@ -93,9 +95,9 @@ export function FrameCard({
         </div>
       </div>
 
-      {/* Image carousel */}
-      <div className="relative aspect-[4/3] bg-cream-50">
-        {frame.images.length === 0 ? (
+      {/* Image display - Carousel on mobile, Grid on desktop */}
+      {frame.images.length === 0 ? (
+        <div className="relative aspect-[4/3] bg-cream-50">
           <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 p-4">
             <svg
               className="h-12 w-12 mb-2 opacity-50"
@@ -113,8 +115,11 @@ export function FrameCard({
             <p className="text-sm">No photos yet</p>
             <p className="text-xs mt-1">Add photos for each child</p>
           </div>
-        ) : (
-          <>
+        </div>
+      ) : (
+        <>
+          {/* Mobile carousel view */}
+          <div className="md:hidden relative aspect-[4/3] bg-cream-50">
             {imageError.has(currentImage.id) ? (
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                 <p className="text-sm">Failed to load image</p>
@@ -128,7 +133,7 @@ export function FrameCard({
                 className="object-cover"
                 onError={() => {
                   if (
-                    !useApiFallback &&
+                    !apiFallbackImageIds.has(currentImage.id) &&
                     (currentImage.imageUrl?.startsWith("http://") ||
                       currentImage.imageUrl?.startsWith("https://"))
                   ) {
@@ -199,9 +204,63 @@ export function FrameCard({
                 </button>
               </>
             )}
-          </>
-        )}
-      </div>
+          </div>
+
+          {/* Desktop grid view - side by side comparison */}
+          <div className="hidden md:flex md:flex-wrap bg-cream-100">
+            {frame.images.map((image) => (
+              <div key={image.id} className="relative aspect-[4/3] bg-cream-50 flex-1 min-w-[200px] max-w-[50%]">
+                {imageError.has(image.id) ? (
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                    <p className="text-sm">Failed to load</p>
+                  </div>
+                ) : (
+                  <Image
+                    src={getImageSrc(image)}
+                    alt={`${image.childName}'s photo`}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                    onError={() => {
+                      if (
+                        !apiFallbackImageIds.has(image.id) &&
+                        (image.imageUrl?.startsWith("http://") ||
+                          image.imageUrl?.startsWith("https://"))
+                      ) {
+                        setApiFallbackImageIds(
+                          (prev) => new Set(prev).add(image.id)
+                        );
+                        return;
+                      }
+                      setImageError((prev) => new Set(prev).add(image.id));
+                    }}
+                  />
+                )}
+
+                {/* Child name label */}
+                <div className="absolute bottom-2 left-2 bg-black/60 text-white px-2 py-0.5 rounded-full text-xs">
+                  {image.childName}
+                </div>
+
+                {/* Delete image button */}
+                <button
+                  onClick={() => onDeleteImage(image.id)}
+                  className="absolute top-2 right-2 bg-black/50 hover:bg-rose-500 text-white p-1 rounded-full transition-colors opacity-0 hover:opacity-100 focus:opacity-100"
+                  title="Delete this photo"
+                >
+                  <svg className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                    <path
+                      fillRule="evenodd"
+                      d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
 
       {/* Footer with child image slots */}
       <div className="px-4 py-3 bg-cream-50 border-t border-cream-200">
@@ -230,9 +289,9 @@ export function FrameCard({
           })}
         </div>
 
-        {/* Dot indicators */}
+        {/* Dot indicators - only on mobile */}
         {frame.images.length > 1 && (
-          <div className="flex justify-center gap-1 mt-3">
+          <div className="flex justify-center gap-1 mt-3 md:hidden">
             {frame.images.map((_, index) => (
               <button
                 key={index}

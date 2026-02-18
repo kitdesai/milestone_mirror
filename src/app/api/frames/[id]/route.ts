@@ -3,6 +3,11 @@ import { initializeLucia } from "@/lib/auth";
 import { deleteFrameImages } from "@/lib/r2";
 import { getCloudflareEnv, D1Database } from "@/lib/d1-types";
 
+interface FrameRequest {
+  title: string;
+  description?: string;
+}
+
 export const runtime = "edge";
 
 async function getAuthUser(request: NextRequest, db: D1Database) {
@@ -36,7 +41,7 @@ export async function PUT(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { title, description } = await request.json();
+  const { title, description }: FrameRequest = await request.json();
   const { id: frameId } = await params;
 
   const result = await db

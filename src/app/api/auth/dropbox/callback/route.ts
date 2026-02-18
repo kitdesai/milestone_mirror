@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 
+interface DropboxTokenResponse {
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;
+  token_type: string;
+}
+
 const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
 export const runtime = "edge";
 
@@ -51,7 +58,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const tokens = await tokenResponse.json();
+    const tokens: DropboxTokenResponse = await tokenResponse.json();
 
     // Calculate expiration timestamp (Dropbox tokens expire in 4 hours by default)
     const expiresAt = Date.now() + (tokens.expires_in || 14400) * 1000;

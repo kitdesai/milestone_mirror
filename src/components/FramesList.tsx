@@ -10,6 +10,10 @@ interface FramesListProps {
   childProfiles: Child[];
 }
 
+interface ApiError {
+  error: string;
+}
+
 export function FramesList({ childProfiles }: FramesListProps) {
   const [frames, setFrames] = useState<FrameWithImages[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -26,7 +30,7 @@ export function FramesList({ childProfiles }: FramesListProps) {
   const fetchFrames = async () => {
     try {
       const res = await fetch("/api/frames");
-      const data = await res.json();
+      const data: { frames: FrameWithImages[] } = await res.json();
       setFrames(data.frames || []);
     } catch (error) {
       console.error("Failed to fetch frames:", error);
@@ -47,7 +51,7 @@ export function FramesList({ childProfiles }: FramesListProps) {
     });
 
     if (!res.ok) {
-      const error = await res.json();
+      const error: ApiError = await res.json();
       throw new Error(error.error || "Failed to create frame");
     }
 
@@ -65,7 +69,7 @@ export function FramesList({ childProfiles }: FramesListProps) {
     });
 
     if (!res.ok) {
-      const error = await res.json();
+      const error: ApiError = await res.json();
       throw new Error(error.error || "Failed to update frame");
     }
 
@@ -174,7 +178,7 @@ export function FramesList({ childProfiles }: FramesListProps) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {frames.map((frame) => (
             <FrameCard
               key={frame.id}
