@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { PhotoWithAge, Child, Milestone } from "@/types";
-import { getPhotoUrl } from "@/lib/google-photos";
+import { detectFaces, loadFaceDetectionModels } from "@/lib/face-detection";
 
 interface PhotoComparisonProps {
   childProfiles: Child[];
@@ -20,9 +20,60 @@ export function PhotoComparison({
   const [photoIndexes, setPhotoIndexes] = useState<Map<string, number>>(
     new Map(childProfiles.map((c) => [c.id, 0]))
   );
+  const [faceFilterEnabled, setFaceFilterEnabled] = useState(false);
+  const [faceCheckResults, setFaceCheckResults] = useState<Map<string, boolean>>(new Map());
+  const [isCheckingFaces, setIsCheckingFaces] = useState(false);
+  const [faceCheckProgress, setFaceCheckProgress] = useState({ checked: 0, total: 0 });
+
+  // Get filtered photos based on face detection
+  const getFilteredPhotos = useCallback((childId: string): PhotoWithAge[] => {
+    const allPhotos = photosByChild.get(childId) || [];
+    if (!faceFilterEnabled) return allPhotos;
+    return allPhotos.filter((photo) => faceCheckResults.get(photo.id) === true);
+  }, [photosByChild, faceFilterEnabled, faceCheckResults]);
+
+  // Check all photos for faces when filter is enabled
+  useEffect(() => {
+    if (!faceFilterEnabled) return;
+
+    const allPhotos = Array.from(photosByChild.values()).flat();
+    const uncheckedPhotos = allPhotos.filter((photo) => !faceCheckResults.has(photo.id));
+
+    if (uncheckedPhotos.length === 0) return;
+
+    setIsCheckingFaces(true);
+    setFaceCheckProgress({ checked: 0, total: uncheckedPhotos.length });
+
+    const checkFaces = async () => {
+      await loadFaceDetectionModels();
+      const results = new Map(faceCheckResults);
+      let checked = 0;
+
+      for (const photo of uncheckedPhotos) {
+        if (!photo.baseUrl) {
+          results.set(photo.id, false);
+        } else {
+          const hasFace = await detectFaces(photo.baseUrl);
+          results.set(photo.id, hasFace);
+        }
+        checked++;
+        setFaceCheckProgress({ checked, total: uncheckedPhotos.length });
+        setFaceCheckResults(new Map(results));
+      }
+
+      setIsCheckingFaces(false);
+    };
+
+    checkFaces();
+  }, [faceFilterEnabled, photosByChild]);
+
+  // Reset photo indexes when filter changes
+  useEffect(() => {
+    setPhotoIndexes(new Map(childProfiles.map((c) => [c.id, 0])));
+  }, [faceFilterEnabled, childProfiles]);
 
   const navigatePhoto = (childId: string, direction: "prev" | "next") => {
-    const photos = photosByChild.get(childId) || [];
+    const photos = getFilteredPhotos(childId);
     const currentIndex = photoIndexes.get(childId) || 0;
     let newIndex: number;
 
@@ -44,11 +95,30 @@ export function PhotoComparison({
         <p className="text-gray-500 text-sm mt-1">
           Comparing photos from approximately the same age
         </p>
+
+        {/* Face filter toggle */}
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={faceFilterEnabled}
+              onChange={(e) => setFaceFilterEnabled(e.target.checked)}
+              className="w-4 h-4 text-rose-500 border-gray-300 rounded focus:ring-rose-400"
+            />
+            <span className="text-sm text-gray-600">Show only photos with faces</span>
+          </label>
+          {isCheckingFaces && (
+            <span className="text-xs text-gray-400">
+              Scanning... {faceCheckProgress.checked}/{faceCheckProgress.total}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {childProfiles.map((child) => {
-          const photos = photosByChild.get(child.id) || [];
+          const photos = getFilteredPhotos(child.id);
+          const allPhotosCount = (photosByChild.get(child.id) || []).length;
           const currentIndex = photoIndexes.get(child.id) || 0;
           const currentPhoto = photos[currentIndex];
 
@@ -65,7 +135,7 @@ export function PhotoComparison({
                 )}
               </div>
 
-              <div className="relative aspect-[4/3] bg-cream-50">
+              <div className="relative aspect-[3/4] bg-cream-50">
                 {photos.length === 0 ? (
                   <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                     <div className="text-center">
@@ -83,19 +153,27 @@ export function PhotoComparison({
                           d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                         />
                       </svg>
-                      <p className="text-sm">No photos found</p>
-                      <p className="text-xs mt-1">for this milestone</p>
+                      <p className="text-sm">
+                        {faceFilterEnabled && allPhotosCount > 0
+                          ? "No photos with faces"
+                          : "No photos found"}
+                      </p>
+                      <p className="text-xs mt-1">
+                        {faceFilterEnabled && allPhotosCount > 0
+                          ? `${allPhotosCount} photos scanned`
+                          : "for this milestone"}
+                      </p>
                     </div>
                   </div>
                 ) : (
                   <>
                     <Image
-                      src={getPhotoUrl(currentPhoto.baseUrl, 800, 600)}
+                      src={currentPhoto.baseUrl}
                       alt={`${child.name} at ${currentPhoto.ageAtPhoto}`}
                       fill
                       className="object-cover cursor-pointer hover:opacity-95 transition-opacity"
                       onClick={() => setSelectedPhoto(currentPhoto)}
-                      unoptimized // Google Photos URLs are dynamic
+                      unoptimized
                     />
 
                     {/* Navigation arrows */}
@@ -141,9 +219,14 @@ export function PhotoComparison({
                 )}
               </div>
 
-              {photos.length > 1 && (
+              {photos.length > 0 && (
                 <div className="px-4 py-2 bg-cream-50 text-center text-sm text-gray-500">
                   Photo {currentIndex + 1} of {photos.length}
+                  {faceFilterEnabled && allPhotosCount !== photos.length && (
+                    <span className="text-gray-400 ml-1">
+                      ({allPhotosCount} total)
+                    </span>
+                  )}
                 </div>
               )}
             </div>
@@ -178,7 +261,7 @@ export function PhotoComparison({
           </button>
           <div className="relative max-w-4xl max-h-[90vh] w-full">
             <Image
-              src={getPhotoUrl(selectedPhoto.baseUrl, 1600, 1200)}
+              src={selectedPhoto.baseUrl}
               alt={`${selectedPhoto.childName} at ${selectedPhoto.ageAtPhoto}`}
               width={1600}
               height={1200}

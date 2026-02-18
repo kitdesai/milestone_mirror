@@ -57,3 +57,51 @@ export interface AppState {
   selectedMilestone: Milestone | null;
   isConnectedToGoogle: boolean;
 }
+
+// User types
+export interface User {
+  id: string;
+  email: string;
+  emailVerified: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Session {
+  id: string;
+  userId: string;
+  expiresAt: Date;
+}
+
+// Frame types
+export interface Frame {
+  id: string;
+  userId: string;
+  title: string;
+  description?: string;
+  displayOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FrameImage {
+  id: string;
+  frameId: string;
+  childId: string;
+  imageKey: string;
+  imageUrl: string;
+  caption?: string;
+  displayOrder: number;
+  createdAt: string;
+}
+
+// Extended frame with images and child info for UI
+export interface FrameWithImages extends Frame {
+  images: (FrameImage & { childName: string })[];
+}
+
+// API response types
+export interface ApiResponse<T> {
+  data?: T;
+  error?: string;
+}

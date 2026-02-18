@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
+const DROPBOX_TOKEN_URL = "https://api.dropboxapi.com/oauth2/token";
+export const runtime = "edge";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,8 +14,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const clientId = process.env.GOOGLE_CLIENT_ID;
-    const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
+    const clientId = process.env.DROPBOX_CLIENT_ID;
+    const clientSecret = process.env.DROPBOX_CLIENT_SECRET;
 
     if (!clientId || !clientSecret) {
       return NextResponse.json(
@@ -23,16 +24,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const tokenResponse = await fetch(GOOGLE_TOKEN_URL, {
+    const tokenResponse = await fetch(DROPBOX_TOKEN_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
         refresh_token,
+        grant_type: "refresh_token",
         client_id: clientId,
         client_secret: clientSecret,
-        grant_type: "refresh_token",
       }),
     });
 
@@ -46,11 +47,11 @@ export async function POST(request: NextRequest) {
     }
 
     const tokens = await tokenResponse.json();
-    const expiresAt = Date.now() + tokens.expires_in * 1000;
+    const expiresAt = Date.now() + (tokens.expires_in || 14400) * 1000;
 
     return NextResponse.json({
       access_token: tokens.access_token,
-      refresh_token: refresh_token, // Google doesn't always return a new refresh token
+      refresh_token: refresh_token, // Dropbox doesn't return new refresh token
       expires_at: expiresAt,
     });
   } catch (error) {

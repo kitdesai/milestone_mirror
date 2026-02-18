@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { AuthProvider } from "@/contexts/AuthContext";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,7 +16,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: "Milestone Mirror - Compare Your Children's Photos",
   description:
-    "Compare photos of your children at the same ages. See how they looked at 3 months, 1 year, and other milestones side by side.",
+    "Compare photos of your children at the same ages. Create custom milestone frames.",
   keywords: ["photos", "children", "comparison", "milestones", "family", "memories"],
 };
 
@@ -29,7 +30,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} antialiased min-h-screen`}
       >
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
