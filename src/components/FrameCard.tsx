@@ -131,7 +131,7 @@ export function FrameCard({
       ) : (
         <>
           {/* Mobile carousel view */}
-          <div className="md:hidden relative aspect-[4/4] bg-cream-50">
+          <div className="md:hidden relative aspect-[3/4] bg-cream-50">
             {imageError.has(currentImage.id) ? (
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                 <p className="text-sm">Failed to load image</p>
