@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import Image from "next/image";
 import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { FrameWithImages } from "@/types";
@@ -30,6 +30,41 @@ export function FrameCard({
   const [imageError, setImageError] = useState<Set<string>>(new Set());
   const [apiFallbackImageIds, setApiFallbackImageIds] = useState<Set<string>>(
     new Set()
+  );
+
+  // Swipe handling
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      if (touchStartX.current === null || touchStartY.current === null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX.current;
+      const dy = e.changedTouches[0].clientY - touchStartY.current;
+      touchStartX.current = null;
+      touchStartY.current = null;
+
+      // Only swipe if horizontal movement > 50px and greater than vertical
+      if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy)) return;
+
+      if (dx < 0) {
+        // Swipe left -> next
+        setCurrentIndex((prev) =>
+          prev < frame.images.length - 1 ? prev + 1 : 0
+        );
+      } else {
+        // Swipe right -> prev
+        setCurrentIndex((prev) =>
+          prev > 0 ? prev - 1 : frame.images.length - 1
+        );
+      }
+    },
+    [frame.images.length]
   );
 
   const handlePrev = () => {
@@ -130,44 +165,60 @@ export function FrameCard({
         </div>
       ) : (
         <>
-          {/* Mobile carousel view */}
-          <div className="md:hidden relative aspect-[3/4] bg-cream-50">
-            {imageError.has(currentImage.id) ? (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                <p className="text-sm">Failed to load image</p>
+          {/* Mobile carousel view - all images rendered for preloading, only current visible */}
+          <div
+            className="md:hidden relative aspect-[3/4] bg-cream-50 overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            {frame.images.map((image, index) => (
+              <div
+                key={image.id}
+                className={cn(
+                  "absolute inset-0 transition-opacity duration-200",
+                  index === currentIndex
+                    ? "opacity-100 z-10"
+                    : "opacity-0 z-0"
+                )}
+              >
+                {imageError.has(image.id) ? (
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+                    <p className="text-sm">Failed to load image</p>
+                  </div>
+                ) : (
+                  <Image
+                    src={getImageSrc(image)}
+                    alt={`${image.childName}'s photo`}
+                    fill
+                    unoptimized
+                    className="object-cover"
+                    onError={() => {
+                      if (
+                        !apiFallbackImageIds.has(image.id) &&
+                        (image.imageUrl?.startsWith("http://") ||
+                          image.imageUrl?.startsWith("https://"))
+                      ) {
+                        setApiFallbackImageIds(
+                          (prev) => new Set(prev).add(image.id)
+                        );
+                        return;
+                      }
+                      setImageError((prev) => new Set(prev).add(image.id));
+                    }}
+                  />
+                )}
               </div>
-            ) : (
-              <Image
-                src={currentImageSrc}
-                alt={`${currentImage.childName}'s photo`}
-                fill
-                unoptimized
-                className="object-cover"
-                onError={() => {
-                  if (
-                    !apiFallbackImageIds.has(currentImage.id) &&
-                    (currentImage.imageUrl?.startsWith("http://") ||
-                      currentImage.imageUrl?.startsWith("https://"))
-                  ) {
-                    setApiFallbackImageIds(
-                      (prev) => new Set(prev).add(currentImage.id)
-                    );
-                    return;
-                  }
-                  setImageError((prev) => new Set(prev).add(currentImage.id));
-                }}
-              />
-            )}
+            ))}
 
             {/* Child name label */}
-            <div className="absolute bottom-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+            <div className="absolute bottom-4 left-4 z-20 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
               {currentImage.childName}
             </div>
 
             {/* Delete image button */}
             <button
               onClick={() => onDeleteImage(currentImage.id)}
-              className="absolute top-2 right-2 bg-black/50 hover:bg-rose-500 text-white p-1.5 rounded-full transition-colors"
+              className="absolute top-2 right-2 z-20 bg-black/50 hover:bg-rose-500 text-white p-1.5 rounded-full transition-colors"
               title="Delete this photo"
             >
               <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -184,7 +235,7 @@ export function FrameCard({
               <>
                 <button
                   onClick={handlePrev}
-                  className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                  className="absolute left-2 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
                 >
                   <svg
                     className="h-5 w-5"
@@ -200,7 +251,7 @@ export function FrameCard({
                 </button>
                 <button
                   onClick={handleNext}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 z-20 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-colors"
                 >
                   <svg
                     className="h-5 w-5"

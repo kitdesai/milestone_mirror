@@ -77,7 +77,7 @@ export async function GET(
   );
   headers.set(
     "Cache-Control",
-    object.httpMetadata?.cacheControl || "private, max-age=300"
+    "private, max-age=31536000, immutable"
   );
 
   return new Response(object.body, { headers });
