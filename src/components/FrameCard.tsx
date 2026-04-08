@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { FrameWithImages } from "@/types";
 import { cn } from "@/lib/utils";
 import { toImageApiPath } from "@/lib/r2";
@@ -13,6 +14,7 @@ interface FrameCardProps {
   onAddImage: (childId: string) => void;
   onDeleteImage: (imageId: string) => void;
   childProfiles: { id: string; name: string }[];
+  dragListeners?: SyntheticListenerMap;
 }
 
 export function FrameCard({
@@ -22,6 +24,7 @@ export function FrameCard({
   onAddImage,
   onDeleteImage,
   childProfiles,
+  dragListeners,
 }: FrameCardProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageError, setImageError] = useState<Set<string>>(new Set());
@@ -61,13 +64,25 @@ export function FrameCard({
     <div className="bg-white rounded-2xl shadow-sm border border-cream-200 overflow-hidden">
       {/* Header */}
       <div className="px-4 py-3 bg-gradient-to-r from-peach-100 to-rose-100 flex items-center justify-between">
-        <div>
-          <h3 className="font-display font-semibold text-gray-800">
-            {frame.title}
-          </h3>
+        <div className="flex items-center gap-2">
+          {dragListeners && (
+            <button
+              className="touch-none cursor-grab active:cursor-grabbing p-1 -ml-1 text-gray-400 hover:text-gray-600 transition-colors"
+              {...dragListeners}
+            >
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M7 2a2 2 0 10.001 4.001A2 2 0 007 2zm0 6a2 2 0 10.001 4.001A2 2 0 007 8zm0 6a2 2 0 10.001 4.001A2 2 0 007 14zm6-8a2 2 0 10-.001-4.001A2 2 0 0013 6zm0 2a2 2 0 10.001 4.001A2 2 0 0013 8zm0 6a2 2 0 10.001 4.001A2 2 0 0013 14z" />
+              </svg>
+            </button>
+          )}
+          <div>
+            <h3 className="font-display font-semibold text-gray-800">
+              {frame.title}
+            </h3>
           {frame.description && (
             <p className="text-sm text-gray-600">{frame.description}</p>
           )}
+          </div>
         </div>
         <div className="flex gap-2">
           <button
@@ -97,29 +112,26 @@ export function FrameCard({
 
       {/* Image display - Carousel on mobile, Grid on desktop */}
       {frame.images.length === 0 ? (
-        <div className="relative aspect-[4/3] bg-cream-50">
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-gray-400 p-4">
-            <svg
-              className="h-12 w-12 mb-2 opacity-50"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            <p className="text-sm">No photos yet</p>
-            <p className="text-xs mt-1">Add photos for each child</p>
-          </div>
+        <div className="flex items-center justify-center gap-2 text-gray-400 px-4 py-6">
+          <svg
+            className="h-5 w-5 opacity-50"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
+          <p className="text-sm">No photos yet — add photos for each child below</p>
         </div>
       ) : (
         <>
           {/* Mobile carousel view */}
-          <div className="md:hidden relative aspect-[4/3] bg-cream-50">
+          <div className="md:hidden relative aspect-[4/4] bg-cream-50">
             {imageError.has(currentImage.id) ? (
               <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                 <p className="text-sm">Failed to load image</p>

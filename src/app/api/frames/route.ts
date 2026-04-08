@@ -143,3 +143,42 @@ export async function POST(request: NextRequest) {
     createdAt: new Date().toISOString(),
   });
 }
+
+// PATCH /api/frames - Reorder frames
+export async function PATCH(request: NextRequest) {
+  const env = getCloudflareEnv(request);
+  const db = env?.DB;
+
+  if (!db) {
+    return NextResponse.json(
+      { error: "Database not available" },
+      { status: 500 }
+    );
+  }
+
+  const user = await getAuthUser(request, db);
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { orderedIds }: { orderedIds: string[] } = await request.json();
+
+  if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+    return NextResponse.json(
+      { error: "orderedIds array is required" },
+      { status: 400 }
+    );
+  }
+
+  const statements = orderedIds.map((id, index) =>
+    db
+      .prepare(
+        "UPDATE frames SET display_order = ?, updated_at = datetime('now') WHERE id = ? AND user_id = ?"
+      )
+      .bind(index, id, user.id)
+  );
+
+  await db.batch(statements);
+
+  return NextResponse.json({ success: true });
+}

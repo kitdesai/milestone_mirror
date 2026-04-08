@@ -1,8 +1,22 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { FrameWithImages, Child } from "@/types";
-import { FrameCard } from "./FrameCard";
+import { SortableFrameCard } from "./SortableFrameCard";
 import { FrameForm } from "./FrameForm";
 import { ImageUploader } from "./ImageUploader";
 
@@ -27,6 +41,15 @@ export function FramesList({ childProfiles }: FramesListProps) {
     childName: string;
   } | null>(null);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   const fetchFrames = async () => {
     try {
       const res = await fetch("/api/frames");
@@ -42,6 +65,33 @@ export function FramesList({ childProfiles }: FramesListProps) {
   useEffect(() => {
     fetchFrames();
   }, []);
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = frames.findIndex((f) => f.id === active.id);
+    const newIndex = frames.findIndex((f) => f.id === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    // Optimistic reorder
+    const reordered = [...frames];
+    const [moved] = reordered.splice(oldIndex, 1);
+    reordered.splice(newIndex, 0, moved);
+    setFrames(reordered);
+
+    // Persist to backend
+    try {
+      await fetch("/api/frames", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderedIds: reordered.map((f) => f.id) }),
+      });
+    } catch (error) {
+      console.error("Failed to reorder frames:", error);
+      await fetchFrames(); // Revert on failure
+    }
+  };
 
   const handleCreateFrame = async (title: string, description?: string) => {
     const res = await fetch("/api/frames", {
@@ -178,19 +228,35 @@ export function FramesList({ childProfiles }: FramesListProps) {
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6">
-          {frames.map((frame) => (
-            <FrameCard
-              key={frame.id}
-              frame={frame}
-              childProfiles={childProfiles.map((c) => ({ id: c.id, name: c.name }))}
-              onEdit={() => setEditingFrame(frame)}
-              onDelete={() => handleDeleteFrame(frame.id)}
-              onAddImage={(childId) => handleAddImage(frame.id, childId)}
-              onDeleteImage={(imageId) => handleDeleteImage(frame.id, imageId)}
-            />
-          ))}
-        </div>
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={frames.map((f) => f.id)}
+            strategy={verticalListSortingStrategy}
+          >
+            <div className="grid grid-cols-1 gap-6">
+              {frames.map((frame) => (
+                <SortableFrameCard
+                  key={frame.id}
+                  frame={frame}
+                  childProfiles={childProfiles.map((c) => ({
+                    id: c.id,
+                    name: c.name,
+                  }))}
+                  onEdit={() => setEditingFrame(frame)}
+                  onDelete={() => handleDeleteFrame(frame.id)}
+                  onAddImage={(childId) => handleAddImage(frame.id, childId)}
+                  onDeleteImage={(imageId) =>
+                    handleDeleteImage(frame.id, imageId)
+                  }
+                />
+              ))}
+            </div>
+          </SortableContext>
+        </DndContext>
       )}
 
       {/* Image uploader modal */}

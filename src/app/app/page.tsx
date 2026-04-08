@@ -14,15 +14,6 @@ import { getComparisonPhotos } from "@/lib/dropbox";
 
 const TABS = [
   {
-    id: "comparison",
-    label: "Comparison",
-    icon: (
-      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-        <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4zM3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
-      </svg>
-    ),
-  },
-  {
     id: "frames",
     label: "Frames",
     icon: (
@@ -35,11 +26,20 @@ const TABS = [
       </svg>
     ),
   },
+  {
+    id: "comparison",
+    label: "Comparison",
+    icon: (
+      <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4zM3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+      </svg>
+    ),
+  },
 ];
 
 export default function AppPage() {
   const { user, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState("comparison");
+  const [activeTab, setActiveTab] = useState("frames");
   const [children, setChildren] = useState<Child[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [selectedMilestone, setSelectedMilestone] = useState<Milestone | null>(
