@@ -4,6 +4,7 @@ import { getRequestContext } from "@cloudflare/next-on-pages";
 
 export interface D1Database {
   prepare(query: string): D1PreparedStatement;
+  batch(statements: D1PreparedStatement[]): Promise<unknown[]>;
 }
 
 export interface D1PreparedStatement {
@@ -16,6 +17,11 @@ export interface D1PreparedStatement {
 export interface CloudflareEnv {
   DB: D1Database;
   IMAGES?: R2Bucket;
+  RESEND_API_KEY?: string;
+  APPLE_CLIENT_ID?: string;
+  APPLE_TEAM_ID?: string;
+  APPLE_KEY_ID?: string;
+  APPLE_PRIVATE_KEY?: string;
 }
 
 export interface R2Bucket {

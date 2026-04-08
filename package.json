@@ -21,6 +21,7 @@
     "@lucia-auth/adapter-sqlite": "^3.0.2",
     "date-fns": "^4.1.0",
     "face-api.js": "^0.22.2",
+    "jose": "^6.2.2",
     "lucia": "^3.2.2",
     "next": "^15.1.0",
     "react": "^19.0.0",
@@ -38,6 +39,6 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.0",
-    "wrangler": "^4.62.0"
+    "wrangler": "^4.81.0"
   }
 }

@@ -5,11 +5,22 @@ const protectedRoutes = ["/app"];
 const protectedApiRoutes = ["/api/children", "/api/frames", "/api/images"];
 
 // Routes that should redirect to app if authenticated
-const authRoutes = ["/login", "/register"];
+const authRoutes = ["/auth"];
+
+// Legacy routes that redirect to /auth
+const legacyAuthRoutes = ["/login", "/register"];
 
 export async function middleware(request: NextRequest) {
   const sessionCookie = request.cookies.get("auth_session");
   const { pathname } = request.nextUrl;
+
+  // Redirect legacy auth routes to /auth
+  const isLegacyRoute = legacyAuthRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+  if (isLegacyRoute) {
+    return NextResponse.redirect(new URL("/auth", request.url));
+  }
 
   // Check if accessing protected route without session
   const isProtectedRoute = protectedRoutes.some((route) =>
@@ -21,7 +32,7 @@ export async function middleware(request: NextRequest) {
   );
 
   if (isProtectedRoute && !sessionCookie) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/auth", request.url));
   }
 
   if (isProtectedApiRoute && !sessionCookie) {
@@ -41,6 +52,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: [
     "/app/:path*",
+    "/auth",
     "/login",
     "/register",
     "/api/children/:path*",

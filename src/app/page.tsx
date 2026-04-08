@@ -49,16 +49,10 @@ export default function Home() {
             ) : (
               <>
                 <Link
-                  href="/login"
-                  className="text-gray-600 hover:text-gray-800 font-medium py-2 px-4 transition-colors"
-                >
-                  Log In
-                </Link>
-                <Link
-                  href="/register"
+                  href="/auth"
                   className="bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
                 >
-                  Sign Up
+                  Sign In
                 </Link>
               </>
             )}
@@ -133,7 +127,7 @@ export default function Home() {
 
         <div className="text-center">
           <Link
-            href={user ? "/app" : "/register"}
+            href={user ? "/app" : "/auth"}
             className="inline-block bg-peach-500 hover:bg-peach-600 text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
           >
             {user ? "Open App" : "Get Started Free"}
