@@ -221,7 +221,7 @@ export function FrameCard({
           {/* Desktop grid view - side by side comparison */}
           <div className="hidden md:flex md:flex-wrap bg-cream-100">
             {frame.images.map((image) => (
-              <div key={image.id} className="relative aspect-[4/3] bg-cream-50 flex-1 min-w-[200px] max-w-[50%]">
+              <div key={image.id} className="relative aspect-[3/4] bg-cream-50 flex-1 min-w-[200px] max-w-[50%]">
                 {imageError.has(image.id) ? (
                   <div className="absolute inset-0 flex items-center justify-center text-gray-400">
                     <p className="text-sm">Failed to load</p>
