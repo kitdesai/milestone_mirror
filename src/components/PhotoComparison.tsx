@@ -105,7 +105,7 @@ export function PhotoComparison({
               onChange={(e) => setFaceFilterEnabled(e.target.checked)}
               className="w-4 h-4 text-rose-500 border-gray-300 rounded focus:ring-rose-400"
             />
-            <span className="text-sm text-gray-600">Show only photos with faces</span>
+            <span className="text-sm text-gray-500">Show only photos with faces</span>
           </label>
           {isCheckingFaces && (
             <span className="text-xs text-gray-400">
@@ -129,7 +129,7 @@ export function PhotoComparison({
                   {child.name}
                 </h4>
                 {currentPhoto && (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-gray-500">
                     Age: {currentPhoto.ageAtPhoto}
                   </p>
                 )}

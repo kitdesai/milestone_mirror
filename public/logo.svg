@@ -1,0 +1,19 @@
+<svg width="680" height="520" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(340,220)">
+<circle cx="0" cy="0" r="150" fill="none" stroke="#b8a49b" stroke-width="2.5"/>
+<path d="M0 -144 L58 -75 L0 -36 Z" fill="#d4896b" opacity="0.5" stroke="#d4896b" stroke-width="0.5"/>
+<path d="M0 -144 L-58 -75 L0 -36 Z" fill="#8b9dad" opacity="0.5" stroke="#8b9dad" stroke-width="0.5"/>
+<path d="M125 -72 L75 12 L25 -30 Z" fill="#d4896b" opacity="0.5" stroke="#d4896b" stroke-width="0.5"/>
+<path d="M-125 -72 L-75 12 L-25 -30 Z" fill="#8b9dad" opacity="0.5" stroke="#8b9dad" stroke-width="0.5"/>
+<path d="M125 72 L25 30 L75 -12 Z" fill="#8b9dad" opacity="0.5" stroke="#8b9dad" stroke-width="0.5"/>
+<path d="M-125 72 L-25 30 L-75 -12 Z" fill="#d4896b" opacity="0.5" stroke="#d4896b" stroke-width="0.5"/>
+<path d="M0 144 L-58 75 L0 36 Z" fill="#8b9dad" opacity="0.5" stroke="#8b9dad" stroke-width="0.5"/>
+<path d="M0 144 L58 75 L0 36 Z" fill="#d4896b" opacity="0.5" stroke="#d4896b" stroke-width="0.5"/>
+<circle cx="0" cy="0" r="33" fill="none" stroke="#b8a49b" stroke-width="1.8"/>
+<path d="M-20 19 L-20 -19 L0 3" fill="none" stroke="#d4896b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M0 3 L20 -19 L20 19" fill="none" stroke="#8b9dad" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="0" cy="3" r="2.5" fill="#b8a49b"/>
+</g>
+<text x="340" y="410" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#888" letter-spacing="4px">MILESTONE</text>
+<text x="340" y="438" text-anchor="middle" font-family="sans-serif" font-size="22px" font-weight="500" fill="#555" letter-spacing="5px">MIRROR</text>
+</svg>

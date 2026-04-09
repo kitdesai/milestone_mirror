@@ -9,7 +9,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Warm, nostalgic color palette
+        // Original warm palette
         peach: {
           50: "#fef7f4",
           100: "#fdeee8",
@@ -58,6 +58,15 @@ export default {
           800: "#a5813f",
           900: "#876936",
         },
+
+        // Brand palette (for future use — see files_to_look_at/milestone_mirror_brand_guide.md)
+        // coral: { DEFAULT: "#d4896b", dark: "#b86e4f" },
+        // slate: { DEFAULT: "#8b9dad", dark: "#6b7d8d" },
+        // taupe: "#b8a49b",
+        // charcoal: "#2c2f33",
+        // "warm-gray": "#5a5550",
+        // sand: "#f5f0eb",
+        // blush: "#e8d5ca",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],

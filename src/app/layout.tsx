@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   description:
     "Compare photos of your children at the same ages. Create custom milestone frames.",
   keywords: ["photos", "children", "comparison", "milestones", "family", "memories"],
+  icons: {
+    icon: "/favicon.svg",
+  },
 };
 
 export default function RootLayout({

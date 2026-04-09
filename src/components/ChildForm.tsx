@@ -70,7 +70,7 @@ export function ChildForm({ onAdd, onCancel, editingChild }: ChildFormProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter child's name"
-            className="w-full px-4 py-2 border border-cream-300 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-2 border border-cream-200 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
           />
         </div>
 
@@ -84,7 +84,7 @@ export function ChildForm({ onAdd, onCancel, editingChild }: ChildFormProps) {
             value={birthDate}
             onChange={(e) => setBirthDate(e.target.value)}
             max={new Date().toISOString().split("T")[0]}
-            className="w-full px-4 py-2 border border-cream-300 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-2 border border-cream-200 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
           />
         </div>
 
@@ -99,7 +99,7 @@ export function ChildForm({ onAdd, onCancel, editingChild }: ChildFormProps) {
             <button
               type="button"
               onClick={onCancel}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+              className="px-4 py-2 text-gray-500 hover:text-gray-800 font-medium transition-colors"
             >
               Cancel
             </button>

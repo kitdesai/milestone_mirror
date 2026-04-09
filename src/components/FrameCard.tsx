@@ -115,14 +115,14 @@ export function FrameCard({
               {frame.title}
             </h3>
           {frame.description && (
-            <p className="text-sm text-gray-600">{frame.description}</p>
+            <p className="text-sm text-gray-500">{frame.description}</p>
           )}
           </div>
         </div>
         <div className="flex gap-2">
           <button
             onClick={onEdit}
-            className="p-2 text-gray-500 hover:text-peach-600 transition-colors"
+            className="p-2 text-gray-500 hover:text-peach-700 transition-colors"
             title="Edit frame"
           >
             <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -342,7 +342,7 @@ export function FrameCard({
                   "px-3 py-1 rounded-full text-sm transition-all",
                   hasImage
                     ? "bg-green-100 text-green-700 cursor-default"
-                    : "bg-cream-200 text-gray-600 hover:bg-peach-200 hover:text-peach-700"
+                    : "bg-cream-200 text-gray-500 hover:bg-peach-200 hover:text-peach-700"
                 )}
               >
                 {hasImage ? "\u2713 " : "+ "}
@@ -361,7 +361,7 @@ export function FrameCard({
                 onClick={() => setCurrentIndex(index)}
                 className={cn(
                   "w-2 h-2 rounded-full transition-all",
-                  index === currentIndex ? "bg-peach-500" : "bg-cream-300"
+                  index === currentIndex ? "bg-peach-500" : "bg-cream-200"
                 )}
               />
             ))}

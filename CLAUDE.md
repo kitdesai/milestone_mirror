@@ -4,7 +4,7 @@
 A web app for parents to compare photos of their children at the same ages (e.g., both kids at 3 months old). Deployed at https://milestone-mirror.pages.dev
 
 ## Tech Stack
-- **Frontend:** Next.js 15, React 19, TypeScript, Tailwind CSS
+- **Frontend:** Next.js 15, React 19, TypeScript, Tailwind CSS (brand colors: coral, slate, taupe, sand, cream, blush)
 - **Backend:** Cloudflare Workers (Edge runtime)
 - **Database:** Cloudflare D1 (SQLite) - users, sessions, children, frames, frame_images, verification_codes, oauth_accounts
 - **Storage:** Cloudflare R2 (user-uploaded images for frames)

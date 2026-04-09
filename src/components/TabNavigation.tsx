@@ -29,7 +29,7 @@ export function TabNavigation({
             "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all",
             activeTab === tab.id
               ? "bg-peach-500 text-white shadow-sm"
-              : "text-gray-600 hover:bg-cream-100"
+              : "text-gray-500 hover:bg-cream-100"
           )}
         >
           {tab.icon}

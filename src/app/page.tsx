@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function Home() {
@@ -9,7 +10,7 @@ export default function Home() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-cream-50 to-peach-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-peach-200 border-t-peach-500 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-4 border-peach-100 border-t-peach-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -19,21 +20,7 @@ export default function Home() {
       <header className="bg-white/80 backdrop-blur-sm border-b border-cream-200">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-peach-400 to-rose-400 rounded-xl flex items-center justify-center">
-              <svg
-                className="h-6 w-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
+            <Image src="/icon.svg" alt="Milestone Mirror" width={40} height={40} />
             <h1 className="font-display text-xl font-bold text-gray-800">
               Milestone Mirror
             </h1>
@@ -65,7 +52,7 @@ export default function Home() {
           <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-800 mb-4">
             Compare Your Children at the Same Ages
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             Create beautiful milestone frames and compare how your children
             looked at the same ages. Cherish those precious moments side by
             side.
@@ -92,7 +79,7 @@ export default function Home() {
             <h3 className="font-display text-xl font-semibold text-gray-800 mb-2">
               Photo Comparison
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-500">
               Connect your Dropbox and automatically find photos of your
               children at the same ages based on when the photos were taken.
             </p>
@@ -117,7 +104,7 @@ export default function Home() {
             <h3 className="font-display text-xl font-semibold text-gray-800 mb-2">
               Custom Frames
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-500">
               Create custom milestone frames like &quot;First Steps&quot; or
               &quot;First Smile&quot; and upload the perfect photos for each
               child.

@@ -48,7 +48,7 @@ export function MilestoneSelector({
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                   selectedMilestone?.id === milestone.id
                     ? "bg-peach-500 text-white shadow-md"
-                    : "bg-cream-100 text-gray-700 hover:bg-cream-200"
+                    : "bg-cream-100 text-gray-700 hover:bg-cream-100-200"
                 }`}
               >
                 {milestone.label}

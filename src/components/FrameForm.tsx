@@ -63,7 +63,7 @@ export function FrameForm({ frame, onSave, onCancel }: FrameFormProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="e.g., First Steps, First Smile"
-            className="w-full px-4 py-2 border border-cream-300 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
+            className="w-full px-4 py-2 border border-cream-200 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
           />
         </div>
 
@@ -80,7 +80,7 @@ export function FrameForm({ frame, onSave, onCancel }: FrameFormProps) {
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Add a note about this milestone..."
             rows={2}
-            className="w-full px-4 py-2 border border-cream-300 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all resize-none"
+            className="w-full px-4 py-2 border border-cream-200 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all resize-none"
           />
         </div>
 
@@ -95,7 +95,7 @@ export function FrameForm({ frame, onSave, onCancel }: FrameFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+            className="px-4 py-2 text-gray-500 hover:text-gray-800 font-medium transition-colors"
           >
             Cancel
           </button>

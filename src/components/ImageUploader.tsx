@@ -159,8 +159,8 @@ export function ImageUploader({
               onDragLeave={handleDragLeave}
               className={`flex flex-col items-center justify-center aspect-[4/3] bg-cream-50 rounded-lg border-2 border-dashed cursor-pointer transition-colors ${
                 isDragActive
-                  ? "border-peach-500 bg-peach-50"
-                  : "border-cream-300 hover:border-peach-400"
+                  ? "border-peach-500 bg-cream-50"
+                  : "border-cream-200 hover:border-peach-500"
               }`}
             >
               <svg
@@ -200,7 +200,7 @@ export function ImageUploader({
                   setIsDragActive(false);
                   if (fileInputRef.current) fileInputRef.current.value = "";
                 }}
-                className="flex-1 px-4 py-2 text-gray-600 hover:text-gray-800 font-medium transition-colors"
+                className="flex-1 px-4 py-2 text-gray-500 hover:text-gray-800 font-medium transition-colors"
               >
                 Change Photo
               </button>

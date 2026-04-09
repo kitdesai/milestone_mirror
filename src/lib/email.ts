@@ -17,6 +17,9 @@ export async function sendVerificationCode(
       subject: "Your sign-in code",
       html: `
         <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 400px; margin: 0 auto; padding: 40px 20px;">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <img src="https://milestonemirror.com/icon.svg" alt="Milestone Mirror" width="48" height="48" style="display: inline-block;" />
+          </div>
           <h2 style="color: #1a1a1a; font-size: 20px; margin-bottom: 8px;">Your sign-in code</h2>
           <p style="color: #666; font-size: 14px; margin-bottom: 24px;">Enter this code to sign in to Milestone Mirror:</p>
           <div style="background: #f5f5f5; border-radius: 8px; padding: 16px; text-align: center; margin-bottom: 24px;">

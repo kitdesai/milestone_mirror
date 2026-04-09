@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -95,21 +96,7 @@ function AuthPageInner() {
       <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 bg-gradient-to-br from-peach-400 to-rose-400 rounded-xl flex items-center justify-center">
-              <svg
-                className="h-6 w-6 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-            </div>
+            <Image src="/icon.svg" alt="Milestone Mirror" width={40} height={40} />
           </Link>
           <h1 className="font-display text-2xl font-bold text-gray-800">
             {step === "email" ? "Sign in" : "Check your email"}
@@ -144,7 +131,7 @@ function AuthPageInner() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoFocus
-                  className="w-full px-4 py-2 border border-cream-300 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
+                  className="w-full px-4 py-2 border border-cream-200 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
                   placeholder="you@example.com"
                 />
               </div>
@@ -199,7 +186,7 @@ function AuthPageInner() {
                     setCode(e.target.value.replace(/[^0-9]/g, ""))
                   }
                   required
-                  className="w-full px-4 py-3 border border-cream-300 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all text-center text-2xl tracking-[0.5em] font-mono"
+                  className="w-full px-4 py-3 border border-cream-200 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all text-center text-2xl tracking-[0.5em] font-mono"
                   placeholder="000000"
                 />
               </div>

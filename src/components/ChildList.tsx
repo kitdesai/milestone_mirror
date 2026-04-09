@@ -40,7 +40,7 @@ export function ChildList({ childProfiles, onEdit, onDelete }: ChildListProps) {
             <div className="flex gap-2">
               <button
                 onClick={() => onEdit(child)}
-                className="p-2 text-gray-500 hover:text-peach-600 transition-colors"
+                className="p-2 text-gray-500 hover:text-peach-700 transition-colors"
                 title="Edit"
               >
                 <svg
