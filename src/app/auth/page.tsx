@@ -96,7 +96,7 @@ function AuthPageInner() {
       <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-8 w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center gap-2 mb-4">
-            <Image src="/icon.svg" alt="Milestone Mirror" width={40} height={40} />
+            <Image src="/icon.svg" alt="Milestone Mirror" width={56} height={56} />
           </Link>
           <h1 className="font-display text-2xl font-bold text-gray-800">
             {step === "email" ? "Sign in" : "Check your email"}
