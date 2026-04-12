@@ -18,7 +18,8 @@ export async function POST(request: NextRequest) {
 
     if (!db || !env || !isAppleConfigured(env)) {
       return NextResponse.redirect(
-        new URL("/auth?error=apple_not_configured", request.url)
+        new URL("/auth?error=apple_not_configured", request.url),
+        303
       );
     }
 
@@ -29,20 +30,22 @@ export async function POST(request: NextRequest) {
 
     // User cancelled or Apple returned an error
     if (errorParam) {
-      return NextResponse.redirect(new URL("/auth", request.url));
+      return NextResponse.redirect(new URL("/auth", request.url), 303);
     }
 
     // Validate CSRF state
     const storedState = request.cookies.get("apple_oauth_state")?.value;
     if (!state || state !== storedState) {
       return NextResponse.redirect(
-        new URL("/auth?error=invalid_state", request.url)
+        new URL("/auth?error=invalid_state", request.url),
+        303
       );
     }
 
     if (!code) {
       return NextResponse.redirect(
-        new URL("/auth?error=missing_code", request.url)
+        new URL("/auth?error=missing_code", request.url),
+        303
       );
     }
 
@@ -118,7 +121,7 @@ export async function POST(request: NextRequest) {
     const session = await lucia.createSession(userId, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
 
-    const response = NextResponse.redirect(new URL("/app", request.url));
+    const response = NextResponse.redirect(new URL("/app", request.url), 303);
     response.cookies.set(
       sessionCookie.name,
       sessionCookie.value,
@@ -134,7 +137,8 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Apple callback error:", error);
     return NextResponse.redirect(
-      new URL("/auth?error=apple_auth_failed", request.url)
+      new URL("/auth?error=apple_auth_failed", request.url),
+      303
     );
   }
 }

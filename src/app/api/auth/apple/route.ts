@@ -27,9 +27,9 @@ export async function GET(request: NextRequest) {
   const response = NextResponse.redirect(authURL);
   response.cookies.set("apple_oauth_state", state, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 600, // 10 minutes
+    secure: true,
+    sameSite: "none", // Must be "none" for Apple's cross-site form_post callback
+    maxAge: 600,
     path: "/",
   });
 
