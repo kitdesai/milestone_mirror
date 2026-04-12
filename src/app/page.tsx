@@ -129,6 +129,20 @@ export default function Home() {
             <br />
             We prioritize your privacy and data security.
           </p>
+          <div className="flex justify-center gap-4 mt-3">
+            <Link
+              href="/privacy"
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Terms of Service
+            </Link>
+          </div>
         </div>
       </footer>
     </div>
