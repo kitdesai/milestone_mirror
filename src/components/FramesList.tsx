@@ -16,9 +16,11 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { FrameWithImages, Child } from "@/types";
+import { useAuth } from "@/contexts/AuthContext";
 import { SortableFrameCard } from "./SortableFrameCard";
 import { FrameForm } from "./FrameForm";
 import { ImageUploader } from "./ImageUploader";
+import { UpgradePrompt } from "./UpgradePrompt";
 
 interface FramesListProps {
   childProfiles: Child[];
@@ -29,6 +31,8 @@ interface ApiError {
 }
 
 export function FramesList({ childProfiles }: FramesListProps) {
+  const { user } = useAuth();
+  const tier = user?.tier ?? "free";
   const [frames, setFrames] = useState<FrameWithImages[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -170,22 +174,28 @@ export function FramesList({ childProfiles }: FramesListProps) {
             Create custom milestone collections
           </p>
         </div>
-        {!showCreateForm && !editingFrame && (
-          <button
-            onClick={() => setShowCreateForm(true)}
-            className="flex items-center gap-2 bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-          >
-            <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path
-                fillRule="evenodd"
-                d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-            New Frame
-          </button>
+        {!showCreateForm && !editingFrame && tier === "free" && frames.length >= 5 ? null : (
+          !showCreateForm && !editingFrame && (
+            <button
+              onClick={() => setShowCreateForm(true)}
+              className="flex items-center gap-2 bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path
+                  fillRule="evenodd"
+                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              New Frame
+            </button>
+          )
         )}
       </div>
+
+      {tier === "free" && frames.length >= 5 && (
+        <UpgradePrompt limitType="frames" limit={5} />
+      )}
 
       {/* Create form */}
       {showCreateForm && (

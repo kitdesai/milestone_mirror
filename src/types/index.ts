@@ -63,6 +63,7 @@ export interface User {
   id: string;
   email: string;
   emailVerified: boolean;
+  tier: "free" | "premium";
   createdAt: string;
   updatedAt: string;
 }

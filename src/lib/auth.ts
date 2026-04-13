@@ -9,6 +9,7 @@ declare module "lucia" {
     DatabaseUserAttributes: {
       email: string;
       email_verified: number;
+      tier: string;
     };
   }
 }
@@ -31,6 +32,7 @@ export function initializeLucia(db: D1Database) {
     getUserAttributes: (attributes) => ({
       email: attributes.email,
       emailVerified: Boolean(attributes.email_verified),
+      tier: (attributes.tier as "free" | "premium") || "free",
     }),
   });
 }

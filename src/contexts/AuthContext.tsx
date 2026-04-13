@@ -12,6 +12,7 @@ interface User {
   id: string;
   email: string;
   emailVerified: boolean;
+  tier: "free" | "premium";
 }
 
 interface SessionResponse {

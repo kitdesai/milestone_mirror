@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { initializeLucia } from "@/lib/auth";
 import { generateId } from "@/lib/utils";
 import { getCloudflareEnv, D1Database } from "@/lib/d1-types";
+import { canCreateFrame, Tier } from "@/lib/tier-limits";
 
 interface FrameRequest {
   title: string;
@@ -108,6 +109,26 @@ export async function POST(request: NextRequest) {
   const user = await getAuthUser(request, db);
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // Check tier limits
+  const userRow = await db
+    .prepare("SELECT tier FROM users WHERE id = ?")
+    .bind(user.id)
+    .first<{ tier: string }>();
+  const tier = (userRow?.tier as Tier) || "free";
+
+  const frameCount = await db
+    .prepare("SELECT COUNT(*) as count FROM frames WHERE user_id = ?")
+    .bind(user.id)
+    .first<{ count: number }>();
+
+  const { allowed, limit } = canCreateFrame(frameCount?.count ?? 0, tier);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Frame limit reached", limit, upgradeRequired: true },
+      { status: 403 }
+    );
   }
 
   const { title, description }: FrameRequest = await request.json();

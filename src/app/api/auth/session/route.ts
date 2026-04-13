@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
         id: user.id,
         email: user.email,
         emailVerified: user.emailVerified,
+        tier: user.tier,
       },
     });
   } catch {

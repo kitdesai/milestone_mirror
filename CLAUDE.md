@@ -6,9 +6,10 @@ A web app for parents to compare photos of their children at the same ages (e.g.
 ## Tech Stack
 - **Frontend:** Next.js 15, React 19, TypeScript, Tailwind CSS (brand colors: coral, slate, taupe, sand, cream, blush)
 - **Backend:** Cloudflare Workers (Edge runtime)
-- **Database:** Cloudflare D1 (SQLite) - users, sessions, children, frames, frame_images, verification_codes, oauth_accounts
+- **Database:** Cloudflare D1 (SQLite) - users, sessions, children, frames, frame_images, verification_codes, oauth_accounts, subscriptions
 - **Storage:** Cloudflare R2 (user-uploaded images for frames)
 - **Auth:** Lucia Auth with email magic codes + Sign in with Apple (via `jose` for JWT)
+- **Payments:** Stripe (subscriptions, checkout, billing portal)
 - **External:** Dropbox OAuth for photo access
 - **Face Detection:** face-api.js (client-side)
 
@@ -22,15 +23,20 @@ A web app for parents to compare photos of their children at the same ages (e.g.
 ## Main Features
 1. **Photo Comparison** - Dropbox integration, milestone-based photo matching, face detection filter
 2. **Custom Frames** - User-created milestone collections with uploaded images
-   - Mobile: carousel view with arrows
+   - Mobile: carousel view with swipe + arrows
    - Desktop: side-by-side grid for comparison (full-width cards)
+   - Drag-and-drop reordering
+3. **Subscription Tiers** - Free (5 frames, 2 children) / Premium ($4.99/mo, $49.99/yr, unlimited)
+   - Stripe Checkout for payments, Billing Portal for management
+   - Webhook-driven tier updates (checkout.session.completed, subscription.updated/deleted, invoice.payment_failed)
+   - Tier stored on `users.tier` column, available via Lucia session attributes
 
 ## Project Structure
 ```
-src/app/api/       - API routes (auth, children, frames, images)
+src/app/api/       - API routes (auth, children, frames, images, stripe)
 src/components/    - React components (FrameCard, PhotoComparison, etc.)
 src/contexts/      - AuthContext for session management
-src/lib/           - Utilities (auth, dropbox, r2, face-detection, email, verification-code, apple-auth)
+src/lib/           - Utilities (auth, dropbox, r2, face-detection, email, verification-code, apple-auth, stripe, tier-limits)
 db/schema.sql      - D1 database schema
 wrangler.toml      - Cloudflare config (D1, R2 bindings)
 ```
@@ -54,3 +60,4 @@ npx wrangler d1 execute DB --remote --file=./db/schema.sql  # Apply schema
 - `oauth_accounts` - Apple Sign In (provider + provider_user_id → user_id)
 - `children` - Child profiles with birth dates
 - `frames` / `frame_images` - Custom milestone frames with R2 image references
+- `subscriptions` - Stripe subscription state (id, status, period, price)

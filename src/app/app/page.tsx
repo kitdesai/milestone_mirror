@@ -11,6 +11,8 @@ import { MilestoneSelector } from "@/components/MilestoneSelector";
 import { PhotoComparison } from "@/components/PhotoComparison";
 import { DropboxConnectButton } from "@/components/DropboxConnectButton";
 import { FramesList } from "@/components/FramesList";
+import { UpgradePrompt } from "@/components/UpgradePrompt";
+import { SubscriptionManager } from "@/components/SubscriptionManager";
 import { getComparisonPhotos } from "@/lib/dropbox";
 
 const TABS = [
@@ -204,7 +206,7 @@ export default function AppPage() {
                   <h2 className="font-display text-lg font-semibold text-gray-800">
                     Your Children
                   </h2>
-                  {!showAddForm && (
+                  {!showAddForm && !(user?.tier === "free" && children.length >= 2) && (
                     <button
                       onClick={() => setShowAddForm(true)}
                       className="text-peach-600 hover:text-peach-700 font-medium text-sm flex items-center gap-1"
@@ -242,7 +244,15 @@ export default function AppPage() {
                     onDelete={handleDeleteChild}
                   />
                 )}
+                {user?.tier === "free" && children.length >= 2 && !showAddForm && (
+                  <div className="mt-4">
+                    <UpgradePrompt limitType="children" limit={2} />
+                  </div>
+                )}
               </div>
+
+              {/* Subscription */}
+              <SubscriptionManager />
 
               {/* Dropbox connection */}
               <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
