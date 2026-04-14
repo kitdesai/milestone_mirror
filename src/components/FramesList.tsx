@@ -24,13 +24,14 @@ import { UpgradePrompt } from "./UpgradePrompt";
 
 interface FramesListProps {
   childProfiles: Child[];
+  onFramesChange?: (frames: FrameWithImages[]) => void;
 }
 
 interface ApiError {
   error: string;
 }
 
-export function FramesList({ childProfiles }: FramesListProps) {
+export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
   const { user } = useAuth();
   const tier = user?.tier ?? "free";
   const [frames, setFrames] = useState<FrameWithImages[]>([]);
@@ -58,7 +59,9 @@ export function FramesList({ childProfiles }: FramesListProps) {
     try {
       const res = await fetch("/api/frames");
       const data: { frames: FrameWithImages[] } = await res.json();
-      setFrames(data.frames || []);
+      const updatedFrames = data.frames || [];
+      setFrames(updatedFrames);
+      onFramesChange?.(updatedFrames);
     } catch (error) {
       console.error("Failed to fetch frames:", error);
     } finally {

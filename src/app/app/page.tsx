@@ -202,7 +202,7 @@ export default function AppPage() {
 
             {/* Frames */}
             {children.length > 0 ? (
-              <FramesList childProfiles={children} />
+              <FramesList childProfiles={children} onFramesChange={setFrames} />
             ) : null}
           </>
         )}
