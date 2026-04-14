@@ -150,16 +150,46 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
     await fetchFrames();
   };
 
+  const copyToClipboard = (text: string) => {
+    // Try modern API first, fall back to execCommand for cross-browser support
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(text).catch(() => {
+        fallbackCopy(text);
+      });
+    } else {
+      fallbackCopy(text);
+    }
+  };
+
+  const fallbackCopy = (text: string) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  };
+
   const handleShare = async (frameId: string) => {
     try {
+      // If frame already has a share token, just copy the link
+      const existingFrame = frames.find((f) => f.id === frameId);
+      if (existingFrame?.shareToken) {
+        const fullUrl = `${window.location.origin}/share/${existingFrame.shareToken}`;
+        copyToClipboard(fullUrl);
+        return;
+      }
+
       const res = await fetch(`/api/frames/${frameId}/share`, {
         method: "POST",
       });
       if (!res.ok) return;
       const { shareUrl } = await res.json();
       const fullUrl = `${window.location.origin}${shareUrl}`;
-      await navigator.clipboard.writeText(fullUrl);
-      await fetchFrames(); // Update frame with share token
+      copyToClipboard(fullUrl);
+      await fetchFrames();
     } catch (error) {
       console.error("Failed to share frame:", error);
     }
