@@ -1,12 +1,75 @@
 "use client";
 
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
+import { Child } from "@/types";
+import { ChildForm } from "@/components/ChildForm";
+import { ChildList } from "@/components/ChildList";
 import { SubscriptionManager } from "@/components/SubscriptionManager";
+import { UpgradePrompt } from "@/components/UpgradePrompt";
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
+  const [children, setChildren] = useState<Child[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [editingChild, setEditingChild] = useState<Child | null>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+
+  const fetchChildren = useCallback(async () => {
+    try {
+      const res = await fetch("/api/children");
+      const data = await res.json();
+      setChildren(data.children || []);
+    } catch (error) {
+      console.error("Failed to fetch children:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchChildren();
+  }, [fetchChildren]);
+
+  const handleAddChild = async (name: string, birthDate: string) => {
+    const url = editingChild
+      ? `/api/children/${editingChild.id}`
+      : "/api/children";
+    const method = editingChild ? "PUT" : "POST";
+
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, birthDate }),
+    });
+
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error || "Failed to save child");
+    }
+
+    setShowAddForm(false);
+    setEditingChild(null);
+    await fetchChildren();
+  };
+
+  const handleEditChild = (child: Child) => {
+    setEditingChild(child);
+    setShowAddForm(true);
+  };
+
+  const handleDeleteChild = async (childId: string) => {
+    if (!confirm("Delete this child and all their photos?")) return;
+    await fetch(`/api/children/${childId}`, { method: "DELETE" });
+    await fetchChildren();
+  };
+
+  const handleCancelEdit = () => {
+    setShowAddForm(false);
+    setEditingChild(null);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-cream-50 to-peach-50">
@@ -44,6 +107,67 @@ export default function SettingsPage() {
         <h2 className="font-display text-2xl font-bold text-gray-800">
           Settings
         </h2>
+
+        {/* Children */}
+        <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-lg font-semibold text-gray-800">
+              Children
+            </h3>
+            {!showAddForm && !(user?.tier === "free" && children.length >= 2) && children.length > 0 && (
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="text-peach-600 hover:text-peach-700 font-medium text-sm flex items-center gap-1"
+              >
+                <svg
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Add
+              </button>
+            )}
+          </div>
+
+          {isLoading ? (
+            <div className="flex justify-center py-6">
+              <div className="w-6 h-6 border-2 border-peach-200 border-t-peach-500 rounded-full animate-spin" />
+            </div>
+          ) : showAddForm ? (
+            <ChildForm
+              onAdd={handleAddChild}
+              onCancel={handleCancelEdit}
+              editingChild={editingChild || undefined}
+            />
+          ) : children.length === 0 ? (
+            <div className="text-center py-4 text-gray-500">
+              <p className="text-sm">No children added yet.</p>
+              <button
+                onClick={() => setShowAddForm(true)}
+                className="mt-3 bg-peach-500 hover:bg-peach-600 text-white font-medium py-1.5 px-4 rounded-lg text-sm transition-colors"
+              >
+                Add Child
+              </button>
+            </div>
+          ) : (
+            <ChildList
+              childProfiles={children}
+              onEdit={handleEditChild}
+              onDelete={handleDeleteChild}
+            />
+          )}
+          {user?.tier === "free" && children.length >= 2 && !showAddForm && (
+            <div className="mt-4">
+              <UpgradePrompt limitType="children" limit={2} />
+            </div>
+          )}
+        </div>
 
         {/* Subscription */}
         <SubscriptionManager />

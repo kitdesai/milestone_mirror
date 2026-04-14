@@ -4,16 +4,18 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { Child } from "@/types";
+import { Child, FrameWithImages } from "@/types";
 import { ChildForm } from "@/components/ChildForm";
 import { ChildList } from "@/components/ChildList";
 import { FramesList } from "@/components/FramesList";
 import { UpgradePrompt } from "@/components/UpgradePrompt";
 
 export default function AppPage() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [children, setChildren] = useState<Child[]>([]);
+  const [frames, setFrames] = useState<FrameWithImages[]>([]);
   const [isLoadingChildren, setIsLoadingChildren] = useState(true);
+  const [isLoadingFrames, setIsLoadingFrames] = useState(true);
   const [editingChild, setEditingChild] = useState<Child | null>(null);
   const [showAddForm, setShowAddForm] = useState(false);
 
@@ -29,9 +31,27 @@ export default function AppPage() {
     }
   }, []);
 
+  const fetchFrames = useCallback(async () => {
+    try {
+      const res = await fetch("/api/frames");
+      const data = await res.json();
+      setFrames(data.frames || []);
+    } catch (error) {
+      console.error("Failed to fetch frames:", error);
+    } finally {
+      setIsLoadingFrames(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchChildren();
-  }, [fetchChildren]);
+    fetchFrames();
+  }, [fetchChildren, fetchFrames]);
+
+  // Show children management on main page until user has a frame with at least one image
+  const hasFrameWithImage = frames.some((f) => f.images.length > 0);
+  const showOnboarding = !hasFrameWithImage;
+  const isLoading = isLoadingChildren || isLoadingFrames;
 
   const handleAddChild = async (name: string, birthDate: string) => {
     const url = editingChild
@@ -112,78 +132,80 @@ export default function AppPage() {
       </header>
 
       <main className="max-w-6xl mx-auto px-4 py-8">
-        {/* Children management */}
-        <div className="mb-8">
-          <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display text-lg font-semibold text-gray-800">
-                Your Children
-              </h2>
-              {!showAddForm && !(user?.tier === "free" && children.length >= 2) && (
-                <button
-                  onClick={() => setShowAddForm(true)}
-                  className="text-peach-600 hover:text-peach-700 font-medium text-sm flex items-center gap-1"
-                >
-                  <svg
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Add Child
-                </button>
-              )}
-            </div>
-
-            {isLoadingChildren ? (
-              <div className="flex justify-center py-8">
-                <div className="w-6 h-6 border-2 border-peach-200 border-t-peach-500 rounded-full animate-spin" />
-              </div>
-            ) : showAddForm ? (
-              <ChildForm
-                onAdd={handleAddChild}
-                onCancel={handleCancelEdit}
-                editingChild={editingChild || undefined}
-              />
-            ) : children.length === 0 ? (
-              <div className="text-center py-6 text-gray-500">
-                <p className="font-medium">No children added yet</p>
-                <p className="text-sm mt-1">Add your children to start creating frames</p>
-                <button
-                  onClick={() => setShowAddForm(true)}
-                  className="mt-4 bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-6 rounded-lg transition-colors"
-                >
-                  Add Your First Child
-                </button>
-              </div>
-            ) : (
-              <ChildList
-                childProfiles={children}
-                onEdit={handleEditChild}
-                onDelete={handleDeleteChild}
-              />
-            )}
-            {user?.tier === "free" && children.length >= 2 && !showAddForm && (
-              <div className="mt-4">
-                <UpgradePrompt limitType="children" limit={2} />
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Frames */}
-        {isLoadingChildren ? (
+        {isLoading ? (
           <div className="flex justify-center py-12">
             <div className="w-8 h-8 border-4 border-peach-200 border-t-peach-500 rounded-full animate-spin" />
           </div>
-        ) : children.length > 0 ? (
-          <FramesList childProfiles={children} />
-        ) : null}
+        ) : (
+          <>
+            {/* Children management — shown until first frame has an image */}
+            {showOnboarding && (
+              <div className="mb-8">
+                <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h2 className="font-display text-lg font-semibold text-gray-800">
+                      Your Children
+                    </h2>
+                    {!showAddForm && !(user?.tier === "free" && children.length >= 2) && children.length > 0 && (
+                      <button
+                        onClick={() => setShowAddForm(true)}
+                        className="text-peach-600 hover:text-peach-700 font-medium text-sm flex items-center gap-1"
+                      >
+                        <svg
+                          className="h-4 w-4"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        Add Child
+                      </button>
+                    )}
+                  </div>
+
+                  {showAddForm ? (
+                    <ChildForm
+                      onAdd={handleAddChild}
+                      onCancel={handleCancelEdit}
+                      editingChild={editingChild || undefined}
+                    />
+                  ) : children.length === 0 ? (
+                    <div className="text-center py-6 text-gray-500">
+                      <p className="font-medium">No children added yet</p>
+                      <p className="text-sm mt-1">Add your children to start creating frames</p>
+                      <button
+                        onClick={() => setShowAddForm(true)}
+                        className="mt-4 bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                      >
+                        Add Your First Child
+                      </button>
+                    </div>
+                  ) : (
+                    <ChildList
+                      childProfiles={children}
+                      onEdit={handleEditChild}
+                      onDelete={handleDeleteChild}
+                    />
+                  )}
+                  {user?.tier === "free" && children.length >= 2 && !showAddForm && (
+                    <div className="mt-4">
+                      <UpgradePrompt limitType="children" limit={2} />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Frames */}
+            {children.length > 0 ? (
+              <FramesList childProfiles={children} />
+            ) : null}
+          </>
+        )}
       </main>
     </div>
   );

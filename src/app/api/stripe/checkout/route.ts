@@ -46,43 +46,51 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const stripe = getStripe(env.STRIPE_SECRET_KEY);
-  const origin = new URL(request.url).origin;
+  try {
+    const stripe = getStripe(env.STRIPE_SECRET_KEY);
+    const origin = new URL(request.url).origin;
 
-  // Get or create Stripe customer
-  let stripeCustomerId: string | null = null;
-  const userRow = await db
-    .prepare("SELECT stripe_customer_id FROM users WHERE id = ?")
-    .bind(user.id)
-    .first<{ stripe_customer_id: string | null }>();
+    // Get or create Stripe customer
+    let stripeCustomerId: string | null = null;
+    const userRow = await db
+      .prepare("SELECT stripe_customer_id FROM users WHERE id = ?")
+      .bind(user.id)
+      .first<{ stripe_customer_id: string | null }>();
 
-  stripeCustomerId = userRow?.stripe_customer_id ?? null;
+    stripeCustomerId = userRow?.stripe_customer_id ?? null;
 
-  if (!stripeCustomerId) {
-    const customer = await stripe.customers.create({
-      email: user.email,
+    if (!stripeCustomerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: { userId: user.id },
+      });
+      stripeCustomerId = customer.id;
+      await db
+        .prepare(
+          "UPDATE users SET stripe_customer_id = ?, updated_at = datetime('now') WHERE id = ?"
+        )
+        .bind(stripeCustomerId, user.id)
+        .run();
+    }
+
+    const session = await stripe.checkout.sessions.create({
+      customer: stripeCustomerId,
+      mode: "subscription",
+      line_items: [{ price: priceId, quantity: 1 }],
+      success_url: `${origin}/app?upgraded=true`,
+      cancel_url: `${origin}/app`,
       metadata: { userId: user.id },
+      subscription_data: {
+        metadata: { userId: user.id },
+      },
     });
-    stripeCustomerId = customer.id;
-    await db
-      .prepare(
-        "UPDATE users SET stripe_customer_id = ?, updated_at = datetime('now') WHERE id = ?"
-      )
-      .bind(stripeCustomerId, user.id)
-      .run();
+
+    return NextResponse.json({ url: session.url });
+  } catch (err) {
+    console.error("Checkout error:", err);
+    return NextResponse.json(
+      { error: "Failed to create checkout session" },
+      { status: 500 }
+    );
   }
-
-  const session = await stripe.checkout.sessions.create({
-    customer: stripeCustomerId,
-    mode: "subscription",
-    line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/app?upgraded=true`,
-    cancel_url: `${origin}/app`,
-    metadata: { userId: user.id },
-    subscription_data: {
-      metadata: { userId: user.id },
-    },
-  });
-
-  return NextResponse.json({ url: session.url });
 }
