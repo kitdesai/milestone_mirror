@@ -53,7 +53,7 @@ export default function AppPage() {
   const showOnboarding = !hasFrameWithImage;
   const isLoading = isLoadingChildren || isLoadingFrames;
 
-  const handleAddChild = async (name: string, birthDate: string) => {
+  const handleAddChild = async (child: Child) => {
     const url = editingChild
       ? `/api/children/${editingChild.id}`
       : "/api/children";
@@ -62,7 +62,7 @@ export default function AppPage() {
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, birthDate }),
+      body: JSON.stringify({ name: child.name, birthDate: child.birthDate }),
     });
 
     if (!res.ok) {
