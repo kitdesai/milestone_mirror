@@ -29,6 +29,7 @@ interface AuthContextType {
   sendCode: (email: string) => Promise<void>;
   verifyCode: (email: string, code: string) => Promise<void>;
   signInWithApple: () => void;
+  signInWithGoogle: () => void;
   logout: () => Promise<void>;
   refreshSession: () => Promise<void>;
 }
@@ -87,6 +88,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = "/api/auth/apple";
   };
 
+  const signInWithGoogle = () => {
+    window.location.href = "/api/auth/google";
+  };
+
   const logout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     setUser(null);
@@ -101,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         sendCode,
         verifyCode,
         signInWithApple,
+        signInWithGoogle,
         logout,
         refreshSession,
       }}

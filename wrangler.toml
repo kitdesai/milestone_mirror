@@ -7,8 +7,8 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 ENVIRONMENT = "production"
 R2_PUBLIC_URL = "https://pub-c7918669aef34e23997a8d45104363df.r2.dev"
-STRIPE_MONTHLY_PRICE_ID = "price_1TLa37RuO5awI3hdmAoQBavQ"
-STRIPE_YEARLY_PRICE_ID = "price_1TLa37RuO5awI3hdyALWB5az"
+STRIPE_MONTHLY_PRICE_ID = "price_1TLl0T2MjgGWTccuqYI9oBIM"
+STRIPE_YEARLY_PRICE_ID = "price_1TLl0W2MjgGWTccuCU4syTxx"
 
 [[d1_databases]]
 database_id = "05365fe8-5426-4c17-a9cd-1b9e7f8bf3f8"

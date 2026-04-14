@@ -79,6 +79,9 @@ export async function POST(request: NextRequest) {
     success_url: `${origin}/app?upgraded=true`,
     cancel_url: `${origin}/app`,
     metadata: { userId: user.id },
+    subscription_data: {
+      metadata: { userId: user.id },
+    },
   });
 
   return NextResponse.json({ url: session.url });
