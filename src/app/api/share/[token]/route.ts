@@ -71,6 +71,7 @@ export async function GET(
     publicUrl: r2PublicUrl
       ? `${r2PublicUrl}/${img.imageKey}`
       : img.imageUrl,
+    proxyUrl: `/api/share/${token}/image/${img.id}`,
   }));
 
   return NextResponse.json({

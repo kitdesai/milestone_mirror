@@ -7,23 +7,35 @@ interface CompositeOptions {
 }
 
 async function loadImage(url: string): Promise<HTMLImageElement> {
-  // Fetch as blob to avoid CORS canvas tainting
-  const res = await fetch(url, { mode: "cors" });
-  const blob = await res.blob();
-  const objectUrl = URL.createObjectURL(blob);
+  // Try fetching as blob first (works if CORS is configured on R2)
+  // Fall back to loading via img tag with crossOrigin
+  try {
+    const res = await fetch(url);
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
 
-  return new Promise((resolve, reject) => {
-    const img = new window.Image();
-    img.onload = () => {
-      URL.revokeObjectURL(objectUrl);
-      resolve(img);
-    };
-    img.onerror = () => {
-      URL.revokeObjectURL(objectUrl);
-      reject(new Error(`Failed to load image: ${url}`));
-    };
-    img.src = objectUrl;
-  });
+    return new Promise((resolve, reject) => {
+      const img = new window.Image();
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(img);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        reject(new Error(`Failed to load image: ${url}`));
+      };
+      img.src = objectUrl;
+    });
+  } catch {
+    // Fallback: load image directly (may taint canvas on some origins)
+    return new Promise((resolve, reject) => {
+      const img = new window.Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error(`Failed to load image: ${url}`));
+      img.src = url;
+    });
+  }
 }
 
 export async function generateComposite(

@@ -9,6 +9,7 @@ interface ShareImage {
   id: string;
   childName: string;
   publicUrl: string;
+  proxyUrl: string;
   caption: string | null;
 }
 
@@ -49,7 +50,7 @@ export function ShareFrameView({ token }: { token: string }) {
     try {
       const blob = await generateComposite({
         images: frame.images.map((img) => ({
-          url: img.publicUrl,
+          url: img.proxyUrl,
           childName: img.childName,
         })),
         title: frame.title,
