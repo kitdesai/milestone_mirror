@@ -150,6 +150,21 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
     await fetchFrames();
   };
 
+  const handleShare = async (frameId: string) => {
+    try {
+      const res = await fetch(`/api/frames/${frameId}/share`, {
+        method: "POST",
+      });
+      if (!res.ok) return;
+      const { shareUrl } = await res.json();
+      const fullUrl = `${window.location.origin}${shareUrl}`;
+      await navigator.clipboard.writeText(fullUrl);
+      await fetchFrames(); // Update frame with share token
+    } catch (error) {
+      console.error("Failed to share frame:", error);
+    }
+  };
+
   const handleAddImage = (frameId: string, childId: string) => {
     const child = childProfiles.find((c) => c.id === childId);
     if (child) {
@@ -261,6 +276,7 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
                   }))}
                   onEdit={() => setEditingFrame(frame)}
                   onDelete={() => handleDeleteFrame(frame.id)}
+                  onShare={() => handleShare(frame.id)}
                   onAddImage={(childId) => handleAddImage(frame.id, childId)}
                   onDeleteImage={(imageId) =>
                     handleDeleteImage(frame.id, imageId)

@@ -9,6 +9,7 @@ interface SortableFrameCardProps {
   frame: FrameWithImages;
   onEdit: () => void;
   onDelete: () => void;
+  onShare: () => void;
   onAddImage: (childId: string) => void;
   onDeleteImage: (imageId: string) => void;
   childProfiles: { id: string; name: string }[];

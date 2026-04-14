@@ -11,6 +11,7 @@ interface FrameCardProps {
   frame: FrameWithImages;
   onEdit: () => void;
   onDelete: () => void;
+  onShare: () => void;
   onAddImage: (childId: string) => void;
   onDeleteImage: (imageId: string) => void;
   childProfiles: { id: string; name: string }[];
@@ -21,12 +22,14 @@ export function FrameCard({
   frame,
   onEdit,
   onDelete,
+  onShare,
   onAddImage,
   onDeleteImage,
   childProfiles,
   dragListeners,
 }: FrameCardProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [shareTooltip, setShareTooltip] = useState(false);
   const [imageError, setImageError] = useState<Set<string>>(new Set());
   const [apiFallbackImageIds, setApiFallbackImageIds] = useState<Set<string>>(
     new Set()
@@ -119,7 +122,27 @@ export function FrameCard({
           )}
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1">
+          <div className="relative">
+            <button
+              onClick={() => {
+                onShare();
+                setShareTooltip(true);
+                setTimeout(() => setShareTooltip(false), 2000);
+              }}
+              className="p-2 text-gray-500 hover:text-peach-700 transition-colors"
+              title="Share frame"
+            >
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+              </svg>
+            </button>
+            {shareTooltip && (
+              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-30">
+                Link copied!
+              </div>
+            )}
+          </div>
           <button
             onClick={onEdit}
             className="p-2 text-gray-500 hover:text-peach-700 transition-colors"

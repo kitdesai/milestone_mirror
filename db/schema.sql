@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS frames (
   title TEXT NOT NULL,
   description TEXT,
   display_order INTEGER DEFAULT 0,
+  share_token TEXT,
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now'))
 );
@@ -91,6 +92,7 @@ CREATE INDEX IF NOT EXISTS idx_frame_images_child_id ON frame_images(child_id);
 CREATE INDEX IF NOT EXISTS idx_verification_codes_email ON verification_codes(email);
 CREATE INDEX IF NOT EXISTS idx_verification_codes_expires ON verification_codes(expires_at);
 CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts(user_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_frames_share_token ON frames(share_token);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_stripe_customer_id ON subscriptions(stripe_customer_id);
 CREATE INDEX IF NOT EXISTS idx_users_stripe_customer_id ON users(stripe_customer_id);

@@ -81,6 +81,7 @@ export interface Frame {
   title: string;
   description?: string;
   displayOrder: number;
+  shareToken?: string | null;
   createdAt: string;
   updatedAt: string;
 }
