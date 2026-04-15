@@ -174,24 +174,33 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
 
   const handleShare = async (frameId: string) => {
     try {
-      let fullUrl: string;
-
-      // If frame already has a share token, use it directly
+      // If frame already has a share token, open + copy immediately
       const existingFrame = frames.find((f) => f.id === frameId);
       if (existingFrame?.shareToken) {
-        fullUrl = `${window.location.origin}/share/${existingFrame.shareToken}`;
-      } else {
-        const res = await fetch(`/api/frames/${frameId}/share`, {
-          method: "POST",
-        });
-        if (!res.ok) return;
-        const { shareUrl } = await res.json();
-        fullUrl = `${window.location.origin}${shareUrl}`;
-        fetchFrames(); // Update frame with share token in background
+        const fullUrl = `${window.location.origin}/share/${existingFrame.shareToken}`;
+        copyToClipboard(fullUrl);
+        window.open(fullUrl, "_blank");
+        return;
       }
 
+      // Open window synchronously (before await) to avoid popup blocker
+      const newWindow = window.open("about:blank", "_blank");
+
+      const res = await fetch(`/api/frames/${frameId}/share`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        newWindow?.close();
+        return;
+      }
+      const { shareUrl } = await res.json();
+      const fullUrl = `${window.location.origin}${shareUrl}`;
       copyToClipboard(fullUrl);
-      window.open(fullUrl, "_blank");
+
+      if (newWindow) {
+        newWindow.location.href = fullUrl;
+      }
+      fetchFrames();
     } catch (error) {
       console.error("Failed to share frame:", error);
     }

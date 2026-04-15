@@ -131,17 +131,15 @@ export async function generateComposite(
     const childName = images[index].childName;
     ctx.font = "500 16px system-ui, -apple-system, sans-serif";
     const textWidth = ctx.measureText(childName).width;
-    const labelX = x + 16;
-    const labelY = y + imageHeight - 20;
-    const labelPadX = 12;
-    const labelPadY = 6;
+    const labelPadX = 14;
+    const labelPadY = 8;
+    const lw = textWidth + labelPadX * 2;
+    const lh = 16 + labelPadY * 2;
+    const lx = x + 20;
+    const ly = y + imageHeight - lh - 16;
+    const labelRadius = lh / 2;
 
     ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-    const labelRadius = 14;
-    const lx = labelX - labelPadX;
-    const ly = labelY - 14 - labelPadY;
-    const lw = textWidth + labelPadX * 2;
-    const lh = 14 + labelPadY * 2;
 
     ctx.beginPath();
     ctx.moveTo(lx + labelRadius, ly);
@@ -157,7 +155,8 @@ export async function generateComposite(
     ctx.fill();
 
     ctx.fillStyle = "#ffffff";
-    ctx.fillText(childName, labelX, labelY);
+    ctx.textAlign = "left";
+    ctx.fillText(childName, lx + labelPadX, ly + labelPadY + 14);
   });
 
   // Watermark for free users
