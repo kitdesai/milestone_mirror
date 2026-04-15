@@ -1,4 +1,5 @@
 // Client-side canvas compositing for shareable frame images
+// Matches the FrameCard design: pink gradient header, white card, rounded images
 
 interface CompositeOptions {
   images: { url: string }[];
@@ -35,6 +36,27 @@ async function loadImage(url: string): Promise<HTMLImageElement> {
   }
 }
 
+function roundRect(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  r: number
+) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
 export async function generateComposite(
   options: CompositeOptions
 ): Promise<Blob> {
@@ -44,65 +66,96 @@ export async function generateComposite(
     images.map((img) => loadImage(img.url))
   );
 
-  // Layout constants
-  const titleBarHeight = 72;
-  const padding = 16;
-  const gap = 12;
-  const maxImageHeight = 800;
-  const aspectRatio = 3 / 4;
-
+  // Layout
   const imageCount = loadedImages.length;
-  const imageWidth = imageCount === 1 ? 600 : imageCount === 2 ? 500 : 400;
-  const imageHeight = Math.min(
-    Math.round(imageWidth / aspectRatio),
-    maxImageHeight
-  );
-  const canvasWidth =
-    padding * 2 + imageWidth * imageCount + gap * (imageCount - 1);
-  const canvasHeight = titleBarHeight + imageHeight + padding;
+  const imageWidth = imageCount === 1 ? 600 : imageCount === 2 ? 480 : 380;
+  const aspectRatio = 3 / 4;
+  const imageHeight = Math.round(imageWidth / aspectRatio);
+  const imageGap = 10;
+  const cardPadding = 16;
+  const headerHeight = 56;
+  const cardRadius = 20;
+  const imageRadius = 12;
+  const outerPadding = 24;
+
+  const cardInnerWidth =
+    imageWidth * imageCount + imageGap * (imageCount - 1) + cardPadding * 2;
+  const cardInnerHeight = headerHeight + imageHeight + cardPadding;
+  const canvasWidth = cardInnerWidth + outerPadding * 2;
+  const canvasHeight = cardInnerHeight + outerPadding * 2;
 
   const canvas = document.createElement("canvas");
   canvas.width = canvasWidth;
   canvas.height = canvasHeight;
   const ctx = canvas.getContext("2d")!;
 
-  // Background
-  ctx.fillStyle = "#faf8f5";
+  // Page background (sand)
+  ctx.fillStyle = "#f5f0eb";
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-  // Title
-  ctx.fillStyle = "#1a1a1a";
-  ctx.font = "bold 28px system-ui, -apple-system, sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText(title, canvasWidth / 2, titleBarHeight - 20);
+  // Card background (white with border)
+  const cardX = outerPadding;
+  const cardY = outerPadding;
+  ctx.save();
+  roundRect(ctx, cardX, cardY, cardInnerWidth, cardInnerHeight, cardRadius);
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+  ctx.strokeStyle = "#faf4e8"; // cream-200
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.restore();
+
+  // Header gradient (peach-100 to rose-100)
+  // Clip to top of card with rounded top corners
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(cardX + cardRadius, cardY);
+  ctx.lineTo(cardX + cardInnerWidth - cardRadius, cardY);
+  ctx.quadraticCurveTo(
+    cardX + cardInnerWidth,
+    cardY,
+    cardX + cardInnerWidth,
+    cardY + cardRadius
+  );
+  ctx.lineTo(cardX + cardInnerWidth, cardY + headerHeight);
+  ctx.lineTo(cardX, cardY + headerHeight);
+  ctx.lineTo(cardX, cardY + cardRadius);
+  ctx.quadraticCurveTo(cardX, cardY, cardX + cardRadius, cardY);
+  ctx.closePath();
+
+  const gradient = ctx.createLinearGradient(
+    cardX,
+    cardY,
+    cardX + cardInnerWidth,
+    cardY
+  );
+  gradient.addColorStop(0, "#fdeee8"); // peach-100
+  gradient.addColorStop(1, "#fce8ed"); // rose-100
+  ctx.fillStyle = gradient;
+  ctx.fill();
+  ctx.restore();
+
+  // Title text (left aligned in header)
+  ctx.fillStyle = "#1f2937"; // gray-800
+  ctx.font = "bold 22px system-ui, -apple-system, sans-serif";
+  ctx.textAlign = "left";
+  ctx.fillText(
+    title,
+    cardX + cardPadding + 4,
+    cardY + headerHeight / 2 + 8
+  );
 
   // Draw images
   loadedImages.forEach((img, index) => {
-    const x = padding + index * (imageWidth + gap);
-    const y = titleBarHeight;
+    const x = cardX + cardPadding + index * (imageWidth + imageGap);
+    const y = cardY + headerHeight;
 
-    // Rounded rect clip
-    const radius = 12;
+    // Rounded rect clip for image
     ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(x + radius, y);
-    ctx.lineTo(x + imageWidth - radius, y);
-    ctx.quadraticCurveTo(x + imageWidth, y, x + imageWidth, y + radius);
-    ctx.lineTo(x + imageWidth, y + imageHeight - radius);
-    ctx.quadraticCurveTo(
-      x + imageWidth,
-      y + imageHeight,
-      x + imageWidth - radius,
-      y + imageHeight
-    );
-    ctx.lineTo(x + radius, y + imageHeight);
-    ctx.quadraticCurveTo(x, y + imageHeight, x, y + imageHeight - radius);
-    ctx.lineTo(x, y + radius);
-    ctx.quadraticCurveTo(x, y, x + radius, y);
-    ctx.closePath();
+    roundRect(ctx, x, y, imageWidth, imageHeight, imageRadius);
     ctx.clip();
 
-    // Object-cover behavior
+    // Object-cover
     const imgAspect = img.width / img.height;
     const slotAspect = imageWidth / imageHeight;
     let sx = 0,
@@ -124,13 +177,13 @@ export async function generateComposite(
 
   // Watermark
   if (watermark) {
-    ctx.font = "14px system-ui, -apple-system, sans-serif";
-    ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
+    ctx.font = "13px system-ui, -apple-system, sans-serif";
+    ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
     ctx.textAlign = "right";
     ctx.fillText(
       "milestonemirror.com",
-      canvasWidth - padding - 4,
-      canvasHeight - 8
+      cardX + cardInnerWidth - cardPadding,
+      cardY + cardInnerHeight - 6
     );
   }
 
