@@ -2,9 +2,11 @@
 // Matches the FrameCard design: pink gradient header, white card, rounded images
 
 interface CompositeOptions {
-  images: { url: string }[];
+  images: { url: string; childName?: string }[];
   title: string;
   watermark: boolean;
+  includeLabels?: boolean;
+  highRes?: boolean;
 }
 
 async function loadImage(url: string): Promise<HTMLImageElement> {
@@ -60,20 +62,25 @@ function roundRect(
 export async function generateComposite(
   options: CompositeOptions
 ): Promise<Blob> {
-  const { images, title, watermark } = options;
+  const { images, title, watermark, includeLabels = false, highRes = false } =
+    options;
 
   const loadedImages = await Promise.all(
     images.map((img) => loadImage(img.url))
   );
 
-  // Layout
+  // Use 2x scale for high-res output (sharper text)
+  const scale = highRes ? 2 : 1;
+
+  // Layout (in logical pixels, scaled up for canvas)
   const imageCount = loadedImages.length;
   const imageWidth = imageCount === 1 ? 600 : imageCount === 2 ? 480 : 380;
   const aspectRatio = 3 / 4;
   const imageHeight = Math.round(imageWidth / aspectRatio);
   const imageGap = 10;
   const cardPadding = 16;
-  const headerHeight = title ? 56 : 0;
+  const hasHeader = !!title;
+  const headerHeight = hasHeader ? 56 : 0;
   const cardRadius = 20;
   const imageRadius = 12;
   const outerPadding = 24;
@@ -85,9 +92,12 @@ export async function generateComposite(
   const canvasHeight = cardInnerHeight + outerPadding * 2;
 
   const canvas = document.createElement("canvas");
-  canvas.width = canvasWidth;
-  canvas.height = canvasHeight;
+  canvas.width = canvasWidth * scale;
+  canvas.height = canvasHeight * scale;
   const ctx = canvas.getContext("2d")!;
+
+  // Scale all drawing operations
+  ctx.scale(scale, scale);
 
   // Page background (sand)
   ctx.fillStyle = "#f5f0eb";
@@ -100,13 +110,13 @@ export async function generateComposite(
   roundRect(ctx, cardX, cardY, cardInnerWidth, cardInnerHeight, cardRadius);
   ctx.fillStyle = "#ffffff";
   ctx.fill();
-  ctx.strokeStyle = "#faf4e8"; // cream-200
+  ctx.strokeStyle = "#faf4e8";
   ctx.lineWidth = 1.5;
   ctx.stroke();
   ctx.restore();
 
-  // Header gradient (peach-100 to rose-100) — only if title provided
-  if (title) {
+  // Header gradient
+  if (hasHeader) {
     ctx.save();
     ctx.beginPath();
     ctx.moveTo(cardX + cardRadius, cardY);
@@ -129,21 +139,17 @@ export async function generateComposite(
       cardX + cardInnerWidth,
       cardY
     );
-    gradient.addColorStop(0, "#fdeee8"); // peach-100
-    gradient.addColorStop(1, "#fce8ed"); // rose-100
+    gradient.addColorStop(0, "#fdeee8");
+    gradient.addColorStop(1, "#fce8ed");
     ctx.fillStyle = gradient;
     ctx.fill();
     ctx.restore();
 
-    // Title text (left aligned in header)
-    ctx.fillStyle = "#1f2937"; // gray-800
+    // Title
+    ctx.fillStyle = "#1f2937";
     ctx.font = "bold 22px system-ui, -apple-system, sans-serif";
     ctx.textAlign = "left";
-    ctx.fillText(
-      title,
-      cardX + cardPadding + 4,
-      cardY + headerHeight / 2 + 8
-    );
+    ctx.fillText(title, cardX + cardPadding + 4, cardY + headerHeight / 2 + 8);
   }
 
   // Draw images
@@ -151,7 +157,7 @@ export async function generateComposite(
     const x = cardX + cardPadding + index * (imageWidth + imageGap);
     const y = cardY + headerHeight;
 
-    // Rounded rect clip for image
+    // Rounded rect clip
     ctx.save();
     roundRect(ctx, x, y, imageWidth, imageHeight, imageRadius);
     ctx.clip();
@@ -174,6 +180,28 @@ export async function generateComposite(
 
     ctx.drawImage(img, sx, sy, sw, sh, x, y, imageWidth, imageHeight);
     ctx.restore();
+
+    // Child name label
+    if (includeLabels && images[index].childName) {
+      const childName = images[index].childName!;
+      ctx.font = "500 14px system-ui, -apple-system, sans-serif";
+      const textWidth = ctx.measureText(childName).width;
+      const labelPadX = 12;
+      const labelPadY = 6;
+      const lw = textWidth + labelPadX * 2;
+      const lh = 14 + labelPadY * 2;
+      const lx = x + 16;
+      const ly = y + imageHeight - lh - 14;
+      const labelRadius = lh / 2;
+
+      ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
+      roundRect(ctx, lx, ly, lw, lh, labelRadius);
+      ctx.fill();
+
+      ctx.fillStyle = "#ffffff";
+      ctx.textAlign = "left";
+      ctx.fillText(childName, lx + labelPadX, ly + labelPadY + 12);
+    }
   });
 
   // Watermark
@@ -195,7 +223,7 @@ export async function generateComposite(
         else reject(new Error("Failed to generate image"));
       },
       "image/jpeg",
-      0.92
+      0.95
     );
   });
 }

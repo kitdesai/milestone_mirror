@@ -6,6 +6,7 @@ import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { FrameWithImages } from "@/types";
 import { cn } from "@/lib/utils";
 import { toImageApiPath } from "@/lib/r2";
+import { generateComposite } from "@/lib/composite";
 
 interface FrameCardProps {
   frame: FrameWithImages;
@@ -30,6 +31,36 @@ export function FrameCard({
 }: FrameCardProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [shareTooltip, setShareTooltip] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (frame.images.length === 0) return;
+    setIsDownloading(true);
+    try {
+      const blob = await generateComposite({
+        images: frame.images.map((img) => ({
+          url: getImageSrc(img),
+          childName: img.childName,
+        })),
+        title: frame.title,
+        watermark: false,
+        includeLabels: true,
+        highRes: true,
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${frame.title.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "-").toLowerCase()}-milestone-mirror.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download failed:", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
   const [imageError, setImageError] = useState<Set<string>>(new Set());
   const [apiFallbackImageIds, setApiFallbackImageIds] = useState<Set<string>>(
     new Set()
@@ -143,6 +174,24 @@ export function FrameCard({
               </div>
             )}
           </div>
+          {frame.images.length > 0 && (
+            <button
+              onClick={handleDownload}
+              disabled={isDownloading}
+              className="p-2 text-gray-500 hover:text-peach-700 transition-colors disabled:opacity-50"
+              title="Download image"
+            >
+              {isDownloading ? (
+                <svg className="h-5 w-5 animate-spin" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <circle cx="10" cy="10" r="7" strokeDasharray="30" strokeDashoffset="10" />
+                </svg>
+              ) : (
+                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" />
+                </svg>
+              )}
+            </button>
+          )}
           <button
             onClick={onEdit}
             className="p-2 text-gray-500 hover:text-peach-700 transition-colors"
