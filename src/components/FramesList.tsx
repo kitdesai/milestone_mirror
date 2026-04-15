@@ -20,6 +20,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { SortableFrameCard } from "./SortableFrameCard";
 import { FrameForm } from "./FrameForm";
 import { ImageUploader } from "./ImageUploader";
+import { generateComposite } from "@/lib/composite";
 import { UpgradePrompt } from "./UpgradePrompt";
 
 interface FramesListProps {
@@ -174,18 +175,21 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
 
   const handleShare = async (frameId: string) => {
     try {
-      // If frame already has a share token, open + copy immediately
-      const existingFrame = frames.find((f) => f.id === frameId);
-      if (existingFrame?.shareToken) {
-        const fullUrl = `${window.location.origin}/share/${existingFrame.shareToken}`;
+      const frame = frames.find((f) => f.id === frameId);
+      if (!frame) return;
+
+      // If already shared, just copy + open
+      if (frame.shareToken) {
+        const fullUrl = `${window.location.origin}/share/${frame.shareToken}`;
         copyToClipboard(fullUrl);
         window.open(fullUrl, "_blank");
         return;
       }
 
-      // Open window synchronously (before await) to avoid popup blocker
+      // Open window synchronously to avoid popup blocker
       const newWindow = window.open("about:blank", "_blank");
 
+      // 1. Create share token
       const res = await fetch(`/api/frames/${frameId}/share`, {
         method: "POST",
       });
@@ -193,7 +197,32 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
         newWindow?.close();
         return;
       }
-      const { shareUrl } = await res.json();
+      const { shareToken, shareUrl } = await res.json();
+
+      // 2. Generate composite image using proxy URLs (same-origin, no CORS)
+      if (frame.images.length > 0) {
+        try {
+          const blob = await generateComposite({
+            images: frame.images.map((img) => ({
+              url: `/api/share/${shareToken}/image/${img.id}`,
+            })),
+            title: frame.title,
+            watermark: tier === "free",
+          });
+
+          // 3. Upload composite to R2
+          const formData = new FormData();
+          formData.append("image", blob, "share.jpg");
+          await fetch(`/api/frames/${frameId}/share-image`, {
+            method: "POST",
+            body: formData,
+          });
+        } catch (err) {
+          console.error("Failed to generate share image:", err);
+          // Continue — share still works, just without OG image
+        }
+      }
+
       const fullUrl = `${window.location.origin}${shareUrl}`;
       copyToClipboard(fullUrl);
 

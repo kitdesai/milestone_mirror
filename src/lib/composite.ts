@@ -1,14 +1,12 @@
 // Client-side canvas compositing for shareable frame images
 
 interface CompositeOptions {
-  images: { url: string; childName: string }[];
+  images: { url: string }[];
   title: string;
   watermark: boolean;
 }
 
 async function loadImage(url: string): Promise<HTMLImageElement> {
-  // Try fetching as blob first (works if CORS is configured on R2)
-  // Fall back to loading via img tag with crossOrigin
   try {
     const res = await fetch(url);
     const blob = await res.blob();
@@ -27,7 +25,6 @@ async function loadImage(url: string): Promise<HTMLImageElement> {
       img.src = objectUrl;
     });
   } catch {
-    // Fallback: load image directly (may taint canvas on some origins)
     return new Promise((resolve, reject) => {
       const img = new window.Image();
       img.crossOrigin = "anonymous";
@@ -43,7 +40,6 @@ export async function generateComposite(
 ): Promise<Blob> {
   const { images, title, watermark } = options;
 
-  // Load all images
   const loadedImages = await Promise.all(
     images.map((img) => loadImage(img.url))
   );
@@ -53,11 +49,10 @@ export async function generateComposite(
   const padding = 16;
   const gap = 12;
   const maxImageHeight = 800;
-  const aspectRatio = 3 / 4; // Match the app's 3:4 aspect
+  const aspectRatio = 3 / 4;
 
-  // Calculate dimensions
   const imageCount = loadedImages.length;
-  const imageWidth = imageCount === 1 ? 600 : 500;
+  const imageWidth = imageCount === 1 ? 600 : imageCount === 2 ? 500 : 400;
   const imageHeight = Math.min(
     Math.round(imageWidth / aspectRatio),
     maxImageHeight
@@ -66,17 +61,16 @@ export async function generateComposite(
     padding * 2 + imageWidth * imageCount + gap * (imageCount - 1);
   const canvasHeight = titleBarHeight + imageHeight + padding;
 
-  // Create canvas
   const canvas = document.createElement("canvas");
   canvas.width = canvasWidth;
   canvas.height = canvasHeight;
   const ctx = canvas.getContext("2d")!;
 
   // Background
-  ctx.fillStyle = "#faf8f5"; // cream
+  ctx.fillStyle = "#faf8f5";
   ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-  // Title bar
+  // Title
   ctx.fillStyle = "#1a1a1a";
   ctx.font = "bold 28px system-ui, -apple-system, sans-serif";
   ctx.textAlign = "center";
@@ -87,7 +81,7 @@ export async function generateComposite(
     const x = padding + index * (imageWidth + gap);
     const y = titleBarHeight;
 
-    // Draw rounded rect clip
+    // Rounded rect clip
     const radius = 12;
     ctx.save();
     ctx.beginPath();
@@ -108,7 +102,7 @@ export async function generateComposite(
     ctx.closePath();
     ctx.clip();
 
-    // Draw image with object-cover behavior
+    // Object-cover behavior
     const imgAspect = img.width / img.height;
     const slotAspect = imageWidth / imageHeight;
     let sx = 0,
@@ -126,40 +120,9 @@ export async function generateComposite(
 
     ctx.drawImage(img, sx, sy, sw, sh, x, y, imageWidth, imageHeight);
     ctx.restore();
-
-    // Child name label
-    const childName = images[index].childName;
-    ctx.font = "500 16px system-ui, -apple-system, sans-serif";
-    const textWidth = ctx.measureText(childName).width;
-    const labelPadX = 14;
-    const labelPadY = 8;
-    const lw = textWidth + labelPadX * 2;
-    const lh = 16 + labelPadY * 2;
-    const lx = x + 20;
-    const ly = y + imageHeight - lh - 16;
-    const labelRadius = lh / 2;
-
-    ctx.fillStyle = "rgba(0, 0, 0, 0.6)";
-
-    ctx.beginPath();
-    ctx.moveTo(lx + labelRadius, ly);
-    ctx.lineTo(lx + lw - labelRadius, ly);
-    ctx.quadraticCurveTo(lx + lw, ly, lx + lw, ly + labelRadius);
-    ctx.lineTo(lx + lw, ly + lh - labelRadius);
-    ctx.quadraticCurveTo(lx + lw, ly + lh, lx + lw - labelRadius, ly + lh);
-    ctx.lineTo(lx + labelRadius, ly + lh);
-    ctx.quadraticCurveTo(lx, ly + lh, lx, ly + lh - labelRadius);
-    ctx.lineTo(lx, ly + labelRadius);
-    ctx.quadraticCurveTo(lx, ly, lx + labelRadius, ly);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.fillStyle = "#ffffff";
-    ctx.textAlign = "left";
-    ctx.fillText(childName, lx + labelPadX, ly + labelPadY + 14);
   });
 
-  // Watermark for free users
+  // Watermark
   if (watermark) {
     ctx.font = "14px system-ui, -apple-system, sans-serif";
     ctx.fillStyle = "rgba(0, 0, 0, 0.35)";
@@ -171,7 +134,6 @@ export async function generateComposite(
     );
   }
 
-  // Export as JPEG
   return new Promise((resolve, reject) => {
     canvas.toBlob(
       (blob) => {

@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS frames (
   description TEXT,
   display_order INTEGER DEFAULT 0,
   share_token TEXT,
+  share_image_key TEXT,
   created_at TEXT DEFAULT (datetime('now')),
   updated_at TEXT DEFAULT (datetime('now'))
 );
