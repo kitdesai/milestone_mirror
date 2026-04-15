@@ -6,6 +6,7 @@ import { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
 import { FrameWithImages } from "@/types";
 import { cn } from "@/lib/utils";
 import { toImageApiPath } from "@/lib/r2";
+import { useAuth } from "@/contexts/AuthContext";
 import { generateComposite } from "@/lib/composite";
 
 interface FrameCardProps {
@@ -29,6 +30,7 @@ export function FrameCard({
   childProfiles,
   dragListeners,
 }: FrameCardProps) {
+  const { user } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [shareTooltip, setShareTooltip] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -39,11 +41,11 @@ export function FrameCard({
     try {
       const blob = await generateComposite({
         images: frame.images.map((img) => ({
-          url: getImageSrc(img),
+          url: toImageApiPath(img.imageKey),
           childName: img.childName,
         })),
         title: frame.title,
-        watermark: false,
+        watermark: user?.tier !== "premium",
         includeLabels: true,
         highRes: true,
       });
