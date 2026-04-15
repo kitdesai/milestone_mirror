@@ -127,79 +127,82 @@ export function ShareFrameView({ token }: { token: string }) {
       </header>
 
       <main className="max-w-4xl mx-auto px-4 py-8">
-        {/* Frame title */}
-        <div className="text-center mb-6">
-          <h1 className="font-display text-2xl md:text-3xl font-bold text-gray-800">
-            {frame.title}
-          </h1>
-          {frame.description && (
-            <p className="text-gray-500 mt-1">{frame.description}</p>
+        {/* Frame card — matches FrameCard design */}
+        <div className="bg-white rounded-2xl shadow-sm border border-cream-200 overflow-hidden mb-8">
+          {/* Pink gradient header */}
+          <div className="px-5 py-4 bg-gradient-to-r from-peach-100 to-rose-100">
+            <h1 className="font-display text-xl font-semibold text-gray-800">
+              {frame.title}
+            </h1>
+            {frame.description && (
+              <p className="text-sm text-gray-600 mt-0.5">{frame.description}</p>
+            )}
+          </div>
+
+          {/* Images */}
+          {frame.images.length > 0 && (
+            <>
+              {/* Mobile: carousel */}
+              <div
+                className="md:hidden relative aspect-[3/4] bg-cream-50"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                {frame.images.map((image, index) => (
+                  <div
+                    key={image.id}
+                    className={`absolute inset-0 transition-opacity duration-200 ${
+                      index === currentIndex
+                        ? "opacity-100 z-10"
+                        : "opacity-0 z-0"
+                    }`}
+                  >
+                    <img
+                      src={image.publicUrl}
+                      alt={`${image.childName}'s photo`}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+                <div className="absolute bottom-4 left-4 z-20 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
+                  {frame.images[currentIndex]?.childName}
+                </div>
+                {frame.images.length > 1 && (
+                  <div className="absolute bottom-4 right-4 z-20 flex gap-1.5">
+                    {frame.images.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentIndex(index)}
+                        className={`w-2 h-2 rounded-full transition-all ${
+                          index === currentIndex ? "bg-white" : "bg-white/50"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop: side by side */}
+              <div className="hidden md:flex bg-cream-100">
+                {frame.images.map((image) => (
+                  <div
+                    key={image.id}
+                    className="relative aspect-[3/4] bg-cream-50 flex-1"
+                  >
+                    <img
+                      src={image.publicUrl}
+                      alt={`${image.childName}'s photo`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute bottom-3 left-3 bg-black/60 text-white px-2 py-0.5 rounded-full text-xs">
+                      {image.childName}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
-
-        {/* Images */}
-        {frame.images.length > 0 && (
-          <>
-            {/* Mobile: carousel */}
-            <div
-              className="md:hidden relative aspect-[3/4] bg-white rounded-2xl overflow-hidden shadow-sm border border-cream-200 mb-4"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              {frame.images.map((image, index) => (
-                <div
-                  key={image.id}
-                  className={`absolute inset-0 transition-opacity duration-200 ${
-                    index === currentIndex ? "opacity-100 z-10" : "opacity-0 z-0"
-                  }`}
-                >
-                  <img
-                    src={image.publicUrl}
-                    alt={`${image.childName}'s photo`}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              ))}
-              <div className="absolute bottom-4 left-4 z-20 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-                {frame.images[currentIndex]?.childName}
-              </div>
-              {frame.images.length > 1 && (
-                <div className="absolute bottom-4 right-4 z-20 flex gap-1.5">
-                  {frame.images.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentIndex(index)}
-                      className={`w-2 h-2 rounded-full transition-all ${
-                        index === currentIndex ? "bg-white" : "bg-white/50"
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Desktop: side by side */}
-            <div className="hidden md:flex gap-4 mb-6">
-              {frame.images.map((image) => (
-                <div
-                  key={image.id}
-                  className="relative aspect-[3/4] flex-1 bg-white rounded-2xl overflow-hidden shadow-sm border border-cream-200"
-                >
-                  <img
-                    src={image.publicUrl}
-                    alt={`${image.childName}'s photo`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute bottom-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-sm">
-                    {image.childName}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-
-        <div className="mb-12" />
 
         {/* CTA */}
         <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-8 text-center">

@@ -73,7 +73,7 @@ export async function generateComposite(
   const imageHeight = Math.round(imageWidth / aspectRatio);
   const imageGap = 10;
   const cardPadding = 16;
-  const headerHeight = 56;
+  const headerHeight = title ? 56 : 0;
   const cardRadius = 20;
   const imageRadius = 12;
   const outerPadding = 24;
@@ -105,45 +105,46 @@ export async function generateComposite(
   ctx.stroke();
   ctx.restore();
 
-  // Header gradient (peach-100 to rose-100)
-  // Clip to top of card with rounded top corners
-  ctx.save();
-  ctx.beginPath();
-  ctx.moveTo(cardX + cardRadius, cardY);
-  ctx.lineTo(cardX + cardInnerWidth - cardRadius, cardY);
-  ctx.quadraticCurveTo(
-    cardX + cardInnerWidth,
-    cardY,
-    cardX + cardInnerWidth,
-    cardY + cardRadius
-  );
-  ctx.lineTo(cardX + cardInnerWidth, cardY + headerHeight);
-  ctx.lineTo(cardX, cardY + headerHeight);
-  ctx.lineTo(cardX, cardY + cardRadius);
-  ctx.quadraticCurveTo(cardX, cardY, cardX + cardRadius, cardY);
-  ctx.closePath();
+  // Header gradient (peach-100 to rose-100) — only if title provided
+  if (title) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(cardX + cardRadius, cardY);
+    ctx.lineTo(cardX + cardInnerWidth - cardRadius, cardY);
+    ctx.quadraticCurveTo(
+      cardX + cardInnerWidth,
+      cardY,
+      cardX + cardInnerWidth,
+      cardY + cardRadius
+    );
+    ctx.lineTo(cardX + cardInnerWidth, cardY + headerHeight);
+    ctx.lineTo(cardX, cardY + headerHeight);
+    ctx.lineTo(cardX, cardY + cardRadius);
+    ctx.quadraticCurveTo(cardX, cardY, cardX + cardRadius, cardY);
+    ctx.closePath();
 
-  const gradient = ctx.createLinearGradient(
-    cardX,
-    cardY,
-    cardX + cardInnerWidth,
-    cardY
-  );
-  gradient.addColorStop(0, "#fdeee8"); // peach-100
-  gradient.addColorStop(1, "#fce8ed"); // rose-100
-  ctx.fillStyle = gradient;
-  ctx.fill();
-  ctx.restore();
+    const gradient = ctx.createLinearGradient(
+      cardX,
+      cardY,
+      cardX + cardInnerWidth,
+      cardY
+    );
+    gradient.addColorStop(0, "#fdeee8"); // peach-100
+    gradient.addColorStop(1, "#fce8ed"); // rose-100
+    ctx.fillStyle = gradient;
+    ctx.fill();
+    ctx.restore();
 
-  // Title text (left aligned in header)
-  ctx.fillStyle = "#1f2937"; // gray-800
-  ctx.font = "bold 22px system-ui, -apple-system, sans-serif";
-  ctx.textAlign = "left";
-  ctx.fillText(
-    title,
-    cardX + cardPadding + 4,
-    cardY + headerHeight / 2 + 8
-  );
+    // Title text (left aligned in header)
+    ctx.fillStyle = "#1f2937"; // gray-800
+    ctx.font = "bold 22px system-ui, -apple-system, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText(
+      title,
+      cardX + cardPadding + 4,
+      cardY + headerHeight / 2 + 8
+    );
+  }
 
   // Draw images
   loadedImages.forEach((img, index) => {

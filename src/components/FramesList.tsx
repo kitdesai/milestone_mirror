@@ -206,7 +206,7 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
             images: frame.images.map((img) => ({
               url: `/api/share/${shareToken}/image/${img.id}`,
             })),
-            title: frame.title,
+            title: "",
             watermark: tier === "free",
           });
 
