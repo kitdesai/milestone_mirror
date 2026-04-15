@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { generateComposite } from "@/lib/composite";
 
 interface ShareImage {
   id: string;
@@ -24,7 +23,6 @@ export function ShareFrameView({ token }: { token: string }) {
   const [frame, setFrame] = useState<SharedFrame | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -42,35 +40,6 @@ export function ShareFrameView({ token }: { token: string }) {
       .catch(() => setNotFound(true))
       .finally(() => setIsLoading(false));
   }, [token]);
-
-  const handleDownload = async () => {
-    if (!frame || frame.images.length === 0) return;
-    setIsDownloading(true);
-
-    try {
-      const blob = await generateComposite({
-        images: frame.images.map((img) => ({
-          url: img.proxyUrl,
-          childName: img.childName,
-        })),
-        title: frame.title,
-        watermark: frame.tier !== "premium",
-      });
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${frame.title.replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, "-").toLowerCase()}-milestone-mirror.jpg`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download failed:", err);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
 
   // Swipe handling for mobile
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
@@ -230,38 +199,7 @@ export function ShareFrameView({ token }: { token: string }) {
           </>
         )}
 
-        {/* Actions */}
-        <div className="flex justify-center gap-3 mb-12">
-          <button
-            onClick={handleDownload}
-            disabled={isDownloading || frame.images.length === 0}
-            className="flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 font-medium py-2.5 px-5 rounded-lg border border-cream-200 transition-colors disabled:opacity-50"
-          >
-            {isDownloading ? (
-              <>
-                <span className="w-4 h-4 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-                Generating...
-              </>
-            ) : (
-              <>
-                <svg
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                  />
-                </svg>
-                Download Image
-              </>
-            )}
-          </button>
-        </div>
+        <div className="mb-12" />
 
         {/* CTA */}
         <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-8 text-center">
