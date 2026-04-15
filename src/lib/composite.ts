@@ -87,7 +87,7 @@ export async function generateComposite(
 
   const cardInnerWidth =
     imageWidth * imageCount + imageGap * (imageCount - 1) + cardPadding * 2;
-  const cardInnerHeight = headerHeight + imageHeight + cardPadding;
+  const cardInnerHeight = headerHeight + cardPadding + imageHeight + cardPadding;
   const canvasWidth = cardInnerWidth + outerPadding * 2;
   const canvasHeight = cardInnerHeight + outerPadding * 2;
 
@@ -155,7 +155,7 @@ export async function generateComposite(
   // Draw images
   loadedImages.forEach((img, index) => {
     const x = cardX + cardPadding + index * (imageWidth + imageGap);
-    const y = cardY + headerHeight;
+    const y = cardY + headerHeight + cardPadding;
 
     // Rounded rect clip
     ctx.save();
