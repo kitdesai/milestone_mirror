@@ -1,0 +1,1 @@
+ALTER TABLE frames ADD COLUMN color TEXT DEFAULT 'peach';

@@ -6,6 +6,7 @@ import { getCloudflareEnv, D1Database } from "@/lib/d1-types";
 interface FrameRequest {
   title: string;
   description?: string;
+  color?: string;
 }
 
 export const runtime = "edge";
@@ -41,14 +42,14 @@ export async function PUT(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { title, description }: FrameRequest = await request.json();
+  const { title, description, color }: FrameRequest = await request.json();
   const { id: frameId } = await params;
 
   const result = await db
     .prepare(
-      "UPDATE frames SET title = ?, description = ?, updated_at = datetime('now') WHERE id = ? AND user_id = ?"
+      "UPDATE frames SET title = ?, description = ?, color = ?, updated_at = datetime('now') WHERE id = ? AND user_id = ?"
     )
-    .bind(title, description || null, frameId, user.id)
+    .bind(title, description || null, color || "peach", frameId, user.id)
     .run();
 
   if (result.meta.changes === 0) {

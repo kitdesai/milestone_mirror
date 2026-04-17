@@ -101,11 +101,11 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
     }
   };
 
-  const handleCreateFrame = async (title: string, description?: string) => {
+  const handleCreateFrame = async (title: string, description?: string, color?: string) => {
     const res = await fetch("/api/frames", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description }),
+      body: JSON.stringify({ title, description, color }),
     });
 
     if (!res.ok) {
@@ -117,13 +117,13 @@ export function FramesList({ childProfiles, onFramesChange }: FramesListProps) {
     await fetchFrames();
   };
 
-  const handleEditFrame = async (title: string, description?: string) => {
+  const handleEditFrame = async (title: string, description?: string, color?: string) => {
     if (!editingFrame) return;
 
     const res = await fetch(`/api/frames/${editingFrame.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, description }),
+      body: JSON.stringify({ title, description, color }),
     });
 
     if (!res.ok) {

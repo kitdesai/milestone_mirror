@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS frames (
   title TEXT NOT NULL,
   description TEXT,
   display_order INTEGER DEFAULT 0,
+  color TEXT DEFAULT 'peach',
   share_token TEXT,
   share_image_key TEXT,
   created_at TEXT DEFAULT (datetime('now')),

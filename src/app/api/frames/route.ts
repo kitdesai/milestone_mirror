@@ -7,6 +7,7 @@ import { canCreateFrame, Tier } from "@/lib/tier-limits";
 interface FrameRequest {
   title: string;
   description?: string;
+  color?: string;
 }
 
 export const runtime = "edge";
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
   // Get frames
   const framesResult = await db
     .prepare(
-      `SELECT id, title, description, display_order as displayOrder, share_token as shareToken, created_at as createdAt
+      `SELECT id, title, description, display_order as displayOrder, color, share_token as shareToken, created_at as createdAt
        FROM frames WHERE user_id = ? ORDER BY display_order, created_at DESC`
     )
     .bind(user.id)
@@ -69,6 +70,7 @@ export async function GET(request: NextRequest) {
     title: string;
     description: string | null;
     displayOrder: number;
+    color: string | null;
     shareToken: string | null;
     createdAt: string;
   }
@@ -132,7 +134,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { title, description }: FrameRequest = await request.json();
+  const { title, description, color }: FrameRequest = await request.json();
 
   if (!title) {
     return NextResponse.json({ error: "Title is required" }, { status: 400 });
@@ -151,9 +153,9 @@ export async function POST(request: NextRequest) {
   const frameId = generateId();
   await db
     .prepare(
-      "INSERT INTO frames (id, user_id, title, description, display_order) VALUES (?, ?, ?, ?, ?)"
+      "INSERT INTO frames (id, user_id, title, description, color, display_order) VALUES (?, ?, ?, ?, ?, ?)"
     )
-    .bind(frameId, user.id, title, description || null, displayOrder)
+    .bind(frameId, user.id, title, description || null, color || "peach", displayOrder)
     .run();
 
   return NextResponse.json({
