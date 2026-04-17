@@ -136,7 +136,7 @@ export default function Home() {
         <ScrollFadeIn className={s.showcaseGrid}>
           <div className={s.showcaseMockup}>
             <div className={s.showcaseFrameHeader}>
-              <span className={s.showcaseFrameTitle}>First Food</span>
+              <span className={s.showcaseFrameTitle}>Sitting Up!</span>
               <div className={s.showcaseFrameIcons}>
                 <span className={s.showcaseFrameIcon}>
                 <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
@@ -148,16 +148,16 @@ export default function Home() {
             </div>
             <div className={s.showcasePhotos}>
               <div className={s.showcasePhoto}>
-                <img src="/first_food_1.png" alt="Miles first food" className={s.showcasePhotoImage} />
+                <img src="/sitting_up_1.png" alt="Miles sitting up" className={s.showcasePhotoImage} />
                 <span className={s.showcasePhotoName}>Miles</span>
               </div>
               <div className={s.showcasePhoto}>
-                <img src="/first_food_2.png" alt="Anna first food" className={s.showcasePhotoImage} />
-                <span className={s.showcasePhotoName}>Anna</span>
+                <img src="/sitting_up_2.png" alt="Anna sitting up" className={s.showcasePhotoImage} />
+                <span className={s.showcasePhotoName}>Hannah</span>
               </div>
               <div className={s.showcasePhoto}>
-                <img src="/first_food_3.png" alt="Max first food" className={s.showcasePhotoImage} />
-                <span className={s.showcasePhotoName}>Max</span>
+                <img src="/sitting_up_3.png" alt="Max sitting up" className={s.showcasePhotoImage} />
+                <span className={s.showcasePhotoName}>Nate</span>
               </div>
             </div>
           </div>
