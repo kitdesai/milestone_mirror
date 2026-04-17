@@ -39,3 +39,12 @@ next-env.d.ts
 .idea/
 .vscode/
 .claude/settings.local.json
+.windsurf/
+
+# AI
+.agents/
+.claude/
+skills-lock.json
+
+# Project specific
+files_to_look_at/

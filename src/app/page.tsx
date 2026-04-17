@@ -52,32 +52,36 @@ export default function Home() {
               <div className={s.phoneNotch} />
               <div className={s.phoneHeader}>Your Frames</div>
               <div className={s.phoneFrameLabel}>
-                <span>🎒 First Day of School</span>
-                <span style={{ fontSize: "0.75rem", color: "#6B6360" }}>↕</span>
+                <span>First Day</span>
+                <span style={{ fontSize: "0.75rem", color: "#6B6360" }}>⠿</span>
               </div>
               <div className={s.phonePhotos}>
-                <div className={s.phonePhoto} style={{ background: "linear-gradient(145deg, #E8C4A0, #D4A07A)" }}>
+                <div className={s.phonePhoto}>
+                  <img src="/first_day_1.png" alt="Emma first day" className={s.phonePhotoImage} />
                   <div className={s.phonePhotoPlaceholder}>
                     <span className={s.phonePhotoName}>Emma</span>
                   </div>
                 </div>
-                <div className={s.phonePhoto} style={{ background: "linear-gradient(145deg, #C4A8D4, #A888BC)" }}>
+                <div className={s.phonePhoto}>
+                  <img src="/first_day_2.png" alt="Liam first day" className={s.phonePhotoImage} />
                   <div className={s.phonePhotoPlaceholder}>
                     <span className={s.phonePhotoName}>Liam</span>
                   </div>
                 </div>
               </div>
               <div className={s.phoneFrameLabel} style={{ marginTop: 4 }}>
-                <span>😊 3 Months Old</span>
-                <span style={{ fontSize: "0.75rem", color: "#6B6360" }}>↕</span>
+                <span>First Steps</span>
+                <span style={{ fontSize: "0.75rem", color: "#6B6360" }}>⠿</span>
               </div>
               <div className={s.phonePhotos} style={{ paddingBottom: 24 }}>
-                <div className={s.phonePhoto} style={{ background: "linear-gradient(145deg, #E8D4A0, #D4BC7A)" }}>
+                <div className={s.phonePhoto}>
+                  <img src="/first_steps_1.png" alt="Emma taking first steps" className={s.phonePhotoImage} />
                   <div className={s.phonePhotoPlaceholder}>
                     <span className={s.phonePhotoName}>Emma</span>
                   </div>
                 </div>
-                <div className={s.phonePhoto} style={{ background: "linear-gradient(145deg, #D4A8B8, #BC88A0)" }}>
+                <div className={s.phonePhoto}>
+                  <img src="/first_steps_2.png" alt="Liam taking first steps" className={s.phonePhotoImage} />
                   <div className={s.phonePhotoPlaceholder}>
                     <span className={s.phonePhotoName}>Liam</span>
                   </div>
@@ -132,21 +136,28 @@ export default function Home() {
         <ScrollFadeIn className={s.showcaseGrid}>
           <div className={s.showcaseMockup}>
             <div className={s.showcaseFrameHeader}>
-              <span className={s.showcaseFrameTitle}>🏥 First Day</span>
+              <span className={s.showcaseFrameTitle}>First Food</span>
               <div className={s.showcaseFrameIcons}>
-                <span className={s.showcaseFrameIcon}>↗</span>
+                <span className={s.showcaseFrameIcon}>
+                <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+              </svg>
+                </span>
                 <span className={s.showcaseFrameIcon}>⬇</span>
               </div>
             </div>
             <div className={s.showcasePhotos}>
-              <div className={s.showcasePhoto} style={{ background: "linear-gradient(145deg, #F0D5B8, #E0BFA0)" }}>
-                <span className={s.showcasePhotoName}>Zayan</span>
+              <div className={s.showcasePhoto}>
+                <img src="/first_food_1.png" alt="Miles first food" className={s.showcasePhotoImage} />
+                <span className={s.showcasePhotoName}>Miles</span>
               </div>
-              <div className={s.showcasePhoto} style={{ background: "linear-gradient(145deg, #D8C0D8, #C0A0C0)" }}>
-                <span className={s.showcasePhotoName}>Amari</span>
+              <div className={s.showcasePhoto}>
+                <img src="/first_food_2.png" alt="Anna first food" className={s.showcasePhotoImage} />
+                <span className={s.showcasePhotoName}>Anna</span>
               </div>
-              <div className={s.showcasePhoto} style={{ background: "linear-gradient(145deg, #B8D0D8, #A0B8C8)" }}>
-                <span className={s.showcasePhotoName}>Sanaya</span>
+              <div className={s.showcasePhoto}>
+                <img src="/first_food_3.png" alt="Max first food" className={s.showcasePhotoImage} />
+                <span className={s.showcasePhotoName}>Max</span>
               </div>
             </div>
           </div>
