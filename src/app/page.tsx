@@ -25,7 +25,13 @@ export default function Home() {
               Milestone Mirror
             </h1>
           </div>
-          <div className="flex gap-3">
+          <div className="flex items-center gap-3">
+            <Link
+              href="/blog"
+              className="text-gray-500 hover:text-gray-700 font-medium py-2 px-3 text-sm transition-colors"
+            >
+              Blog
+            </Link>
             {user ? (
               <Link
                 href="/app"
@@ -326,6 +332,12 @@ export default function Home() {
             Milestone Mirror — Your photos, your memories, your privacy.
           </p>
           <div className="flex justify-center gap-4 mt-3">
+            <Link
+              href="/blog"
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              Blog
+            </Link>
             <Link
               href="/privacy"
               className="text-gray-400 hover:text-gray-600 transition-colors"
