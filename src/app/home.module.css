@@ -395,13 +395,15 @@
   padding: 8px 0;
   font-size: 0.95rem;
   color: #6B6360;
-  display: flex; align-items: center; gap: 10px;
+  display: flex;
+  align-items: center;
 }
 .pricingFeatures li::before {
   content: '✓';
   color: #7A9B6E;
   font-weight: 700;
   font-size: 0.9rem;
+  margin-right: 10px;
 }
 .pricingFeatures li strong { color: #2C2C2C; }
 .pricingBtn {

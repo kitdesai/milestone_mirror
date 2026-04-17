@@ -42,7 +42,6 @@ export default function Home() {
             Get Started Free
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
-          <p className={s.heroSub}>Free forever for up to 5 frames. No credit card required.</p>
         </div>
         <div className={s.heroVisual}>
           <div className={s.blob1} />
@@ -96,7 +95,7 @@ export default function Home() {
       <section className={s.proof}>
         <div className={s.proofInner}>
           <blockquote className={s.proofQuote}>&ldquo;I always thought my kids looked alike as babies, but seeing them side by side at the same age? It&apos;s uncanny.&rdquo;</blockquote>
-          <cite className={s.proofCite}>— Built by a dad of three who got tired of scrolling through 10,000 photos</cite>
+          <cite className={s.proofCite}>- Built by a dad of three who got tired of scrolling through 20,000 photos</cite>
         </div>
       </section>
 
@@ -241,11 +240,11 @@ export default function Home() {
             <div className={s.pricingPrice}>$0 <span>/ forever</span></div>
             <span className={s.pricingAnnual}>&nbsp;</span>
             <ul className={s.pricingFeatures}>
-              <li>Up to <strong>5 frames</strong></li>
-              <li>Up to <strong>2 children</strong></li>
+              <li>Up to&nbsp;<strong>5 frames</strong></li>
+              <li>Up to&nbsp;<strong>2 children</strong></li>
               <li>Swipe & side-by-side comparison</li>
               <li>Drag & drop reorder</li>
-              <li>Share & download frames</li>
+              <li>Share frames</li>
             </ul>
             <Link href="/auth" className={`${s.pricingBtn} ${s.pricingBtnOutline}`}>Get Started</Link>
           </ScrollFadeIn>
@@ -255,10 +254,11 @@ export default function Home() {
             <div className={s.pricingPrice}>$4.99 <span>/ month</span></div>
             <span className={s.pricingAnnual}>or $49.99/year — save 17%</span>
             <ul className={s.pricingFeatures}>
-              <li><strong>Unlimited</strong> frames</li>
-              <li><strong>Unlimited</strong> children</li>
+              <li><strong>Unlimited</strong> &nbsp;frames</li>
+              <li><strong>Unlimited</strong> &nbsp;children</li>
               <li>Everything in Free</li>
               <li>Priority support</li>
+              <li>Download high-resolution frames</li>
             </ul>
             <Link href="/auth" className={`${s.pricingBtn} ${s.pricingBtnFill}`}>Start Free, Upgrade Later</Link>
           </ScrollFadeIn>
