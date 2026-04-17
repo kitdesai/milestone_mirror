@@ -56,13 +56,13 @@ export default function Home() {
               </div>
               <div className={s.phonePhotos}>
                 <div className={s.phonePhoto}>
-                  <img src="/first_day_1.png" alt="Emma first day" className={s.phonePhotoImage} />
+                  <img src="/first_day_1.webp" alt="Emma first day" className={s.phonePhotoImage} />
                   <div className={s.phonePhotoPlaceholder}>
                     <span className={s.phonePhotoName}>Emma</span>
                   </div>
                 </div>
                 <div className={s.phonePhoto}>
-                  <img src="/first_day_2.png" alt="Liam first day" className={s.phonePhotoImage} />
+                  <img src="/first_day_2.webp" alt="Liam first day" className={s.phonePhotoImage} />
                   <div className={s.phonePhotoPlaceholder}>
                     <span className={s.phonePhotoName}>Liam</span>
                   </div>
@@ -74,13 +74,13 @@ export default function Home() {
               </div>
               <div className={s.phonePhotos} style={{ paddingBottom: 24 }}>
                 <div className={s.phonePhoto}>
-                  <img src="/first_steps_1.png" alt="Emma taking first steps" className={s.phonePhotoImage} />
+                  <img src="/first_steps_1.webp" alt="Emma taking first steps" className={s.phonePhotoImage} />
                   <div className={s.phonePhotoPlaceholder}>
                     <span className={s.phonePhotoName}>Emma</span>
                   </div>
                 </div>
                 <div className={s.phonePhoto}>
-                  <img src="/first_steps_2.png" alt="Liam taking first steps" className={s.phonePhotoImage} />
+                  <img src="/first_steps_2.webp" alt="Liam taking first steps" className={s.phonePhotoImage} />
                   <div className={s.phonePhotoPlaceholder}>
                     <span className={s.phonePhotoName}>Liam</span>
                   </div>
@@ -147,15 +147,15 @@ export default function Home() {
             </div>
             <div className={s.showcasePhotos}>
               <div className={s.showcasePhoto}>
-                <img src="/sitting_up_1.png" alt="Miles sitting up" className={s.showcasePhotoImage} />
+                <img src="/sitting_up_1.webp" alt="Miles sitting up" className={s.showcasePhotoImage} />
                 <span className={s.showcasePhotoName}>Miles</span>
               </div>
               <div className={s.showcasePhoto}>
-                <img src="/sitting_up_2.png" alt="Anna sitting up" className={s.showcasePhotoImage} />
+                <img src="/sitting_up_2.webp" alt="Anna sitting up" className={s.showcasePhotoImage} />
                 <span className={s.showcasePhotoName}>Hannah</span>
               </div>
               <div className={s.showcasePhoto}>
-                <img src="/sitting_up_3.png" alt="Max sitting up" className={s.showcasePhotoImage} />
+                <img src="/sitting_up_3.webp" alt="Max sitting up" className={s.showcasePhotoImage} />
                 <span className={s.showcasePhotoName}>Nate</span>
               </div>
             </div>
