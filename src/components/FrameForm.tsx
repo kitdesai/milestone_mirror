@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Frame } from "@/types";
-import { FRAME_COLORS, FrameColor, getFrameColorClass } from "@/lib/frame-colors";
+import { FRAME_COLORS, FrameColor, getFrameColorStyle } from "@/lib/frame-colors";
 
 interface FrameFormProps {
   frame?: Frame;
@@ -42,7 +42,7 @@ export function FrameForm({ frame, onSave, onCancel }: FrameFormProps) {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-2xl shadow-lg max-w-md w-full overflow-hidden">
         {/* Preview header with selected color */}
-        <div className={`px-6 py-4 ${getFrameColorClass(color)}`}>
+        <div className="px-6 py-4" style={getFrameColorStyle(color)}>
           <h3 className="font-display font-semibold text-gray-800">
             {title || (frame ? "Edit Frame" : "New Frame")}
           </h3>
@@ -105,7 +105,8 @@ export function FrameForm({ frame, onSave, onCancel }: FrameFormProps) {
                     type="button"
                     onClick={() => setColor(key)}
                     title={FRAME_COLORS[key].label}
-                    className={`w-8 h-8 rounded-full ${getFrameColorClass(key)} transition-all ${
+                    style={{ background: FRAME_COLORS[key].hex }}
+                    className={`w-8 h-8 rounded-full transition-all ${
                       color === key
                         ? "ring-2 ring-peach-500 ring-offset-2 scale-110"
                         : "hover:scale-105"

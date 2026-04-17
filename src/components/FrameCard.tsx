@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { toImageApiPath } from "@/lib/r2";
 import { useAuth } from "@/contexts/AuthContext";
 import { generateComposite } from "@/lib/composite";
-import { getFrameColorClass } from "@/lib/frame-colors";
+import { getFrameColorStyle } from "@/lib/frame-colors";
 
 interface FrameCardProps {
   frame: FrameWithImages;
@@ -135,7 +135,7 @@ export function FrameCard({
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-cream-200 overflow-hidden">
       {/* Header */}
-      <div className={`px-4 py-3 ${getFrameColorClass(frame.color)} flex items-center justify-between`}>
+      <div className="px-4 py-3 flex items-center justify-between" style={getFrameColorStyle(frame.color)}>
         <div className="flex items-center gap-2">
           {dragListeners && (
             <button
