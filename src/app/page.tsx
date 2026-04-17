@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { AuthNavButton } from "@/components/AuthNavButton";
+import { ScrollFadeIn } from "@/components/ScrollFadeIn";
+import s from "./home.module.css";
 
 export const metadata = {
   title: "Milestone Mirror — Compare Your Children at the Same Ages",
@@ -16,326 +18,263 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-cream-50 to-peach-50">
-      <header className="bg-white/80 backdrop-blur-sm border-b border-cream-200">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/icon.svg" alt="Milestone Mirror" width={56} height={56} />
-            <h1 className="font-display text-xl font-bold text-gray-800">
-              Milestone Mirror
-            </h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/blog"
-              className="text-gray-500 hover:text-gray-700 font-medium py-2 px-3 text-sm transition-colors"
-            >
-              Blog
-            </Link>
-            <AuthNavButton />
-          </div>
+    <div className={s.page}>
+      {/* NAV */}
+      <nav className={s.nav}>
+        <Link href="/" className={s.navBrand}>
+          <img src="/icon.svg" alt="" width={36} height={36} />
+          Milestone Mirror
+        </Link>
+        <div className={s.navLinks}>
+          <Link href="#how-it-works" className={s.navLink}>How It Works</Link>
+          <Link href="#pricing" className={s.navLink}>Pricing</Link>
+          <Link href="/blog" className={s.navLink}>Blog</Link>
+          <AuthNavButton />
         </div>
-      </header>
+      </nav>
 
-      <main>
-        {/* Hero */}
-        <section className="max-w-6xl mx-auto px-4 py-20 text-center">
-          <div className="mb-8">
-            <img
-              src="/icon.svg"
-              alt="Milestone Mirror"
-              width={80}
-              height={80}
-              className="mx-auto mb-6"
-            />
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-              See How They&apos;ve Grown,
-              <br />
-              <span className="text-peach-500">Side by Side</span>
-            </h2>
-            <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-8">
-              Create milestone frames to compare your children at the same ages.
-              First smile, first steps, first day of school — see the
-              resemblance and differences, beautifully.
-            </p>
-            <Link
-              href="/auth"
-              className="inline-block bg-peach-500 hover:bg-peach-600 text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
-            >
-              Get Started Free
-            </Link>
-          </div>
-        </section>
-
-        {/* How it works */}
-        <section className="bg-white/60 border-y border-cream-200 py-16">
-          <div className="max-w-6xl mx-auto px-4">
-            <h3 className="font-display text-2xl font-bold text-gray-800 text-center mb-12">
-              How It Works
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="text-center">
-                <div className="w-14 h-14 bg-peach-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <svg className="h-7 w-7 text-peach-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <h4 className="font-display text-lg font-semibold text-gray-800 mb-2">
-                  1. Add Your Children
-                </h4>
-                <p className="text-gray-500 text-sm">
-                  Add each child with their name and birthday. Milestone Mirror
-                  uses birthdays to match photos at the same ages.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-14 h-14 bg-rose-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <svg className="h-7 w-7 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                </div>
-                <h4 className="font-display text-lg font-semibold text-gray-800 mb-2">
-                  2. Create Frames
-                </h4>
-                <p className="text-gray-500 text-sm">
-                  Create milestone frames like &quot;First Smile&quot; or
-                  &quot;3 Months Old&quot; and upload a photo of each child.
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-14 h-14 bg-cream-200 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                  <svg className="h-7 w-7 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-                <h4 className="font-display text-lg font-semibold text-gray-800 mb-2">
-                  3. Compare & Swipe
-                </h4>
-                <p className="text-gray-500 text-sm">
-                  Swipe between your children&apos;s photos on mobile, or view
-                  them side by side on desktop. See the resemblance instantly.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Features */}
-        <section className="max-w-6xl mx-auto px-4 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-8">
-              <div className="w-10 h-10 bg-peach-100 rounded-xl flex items-center justify-center mb-4">
-                <svg className="h-5 w-5 text-peach-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                </svg>
-              </div>
-              <h4 className="font-display text-lg font-semibold text-gray-800 mb-2">
-                Drag & Drop Reorder
-              </h4>
-              <p className="text-gray-500 text-sm">
-                Organize your frames in the order that tells your family&apos;s story.
-                Drag to reorder on any device.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-8">
-              <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center mb-4">
-                <svg className="h-5 w-5 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h4 className="font-display text-lg font-semibold text-gray-800 mb-2">
-                Mobile First
-              </h4>
-              <p className="text-gray-500 text-sm">
-                Swipe between photos on your phone. Upload directly from your
-                camera roll. Works beautifully on any screen size.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-8">
-              <div className="w-10 h-10 bg-cream-200 rounded-xl flex items-center justify-center mb-4">
-                <svg className="h-5 w-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h4 className="font-display text-lg font-semibold text-gray-800 mb-2">
-                Private & Secure
-              </h4>
-              <p className="text-gray-500 text-sm">
-                Your photos are encrypted and only accessible to you. We never
-                use your images for anything other than showing them to you.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-8">
-              <div className="w-10 h-10 bg-peach-100 rounded-xl flex items-center justify-center mb-4">
-                <svg className="h-5 w-5 text-peach-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
-              </div>
-              <h4 className="font-display text-lg font-semibold text-gray-800 mb-2">
-                Made for Parents
-              </h4>
-              <p className="text-gray-500 text-sm">
-                Built by parents, for parents. No clutter, no social features —
-                just a simple way to cherish your family&apos;s milestones.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing */}
-        <section id="pricing" className="bg-white/60 border-y border-cream-200 py-16">
-          <div className="max-w-4xl mx-auto px-4">
-            <h3 className="font-display text-2xl font-bold text-gray-800 text-center mb-3">
-              Simple Pricing
-            </h3>
-            <p className="text-gray-500 text-center mb-10">
-              Start free. Upgrade when you need more.
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
-              {/* Free tier */}
-              <div className="bg-white rounded-2xl shadow-sm border border-cream-200 p-6">
-                <h4 className="font-display text-lg font-semibold text-gray-800 mb-1">
-                  Free
-                </h4>
-                <p className="text-3xl font-bold text-gray-800 mb-4">
-                  $0
-                  <span className="text-sm font-normal text-gray-500"> /forever</span>
-                </p>
-                <ul className="space-y-3 text-sm text-gray-600 mb-6">
-                  <li className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-green-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Up to 5 frames
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-green-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Up to 2 children
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-green-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Swipe & side-by-side comparison
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-green-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Drag & drop reorder
-                  </li>
-                </ul>
-                <Link
-                  href="/auth"
-                  className="block text-center w-full border-2 border-cream-200 hover:border-peach-400 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Get Started
-                </Link>
-              </div>
-
-              {/* Premium tier */}
-              <div className="bg-white rounded-2xl shadow-sm border-2 border-peach-400 p-6 relative">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-peach-500 text-white text-xs font-medium px-3 py-1 rounded-full">
-                  Most Popular
-                </div>
-                <h4 className="font-display text-lg font-semibold text-gray-800 mb-1">
-                  Premium
-                </h4>
-                <p className="text-3xl font-bold text-gray-800 mb-1">
-                  $4.99
-                  <span className="text-sm font-normal text-gray-500"> /month</span>
-                </p>
-                <p className="text-xs text-gray-400 mb-4">
-                  or $49.99/year (save 17%)
-                </p>
-                <ul className="space-y-3 text-sm text-gray-600 mb-6">
-                  <li className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-peach-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <strong>Unlimited</strong> frames
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-peach-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    <strong>Unlimited</strong> children
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-peach-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Everything in Free
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <svg className="h-4 w-4 text-peach-500 shrink-0" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                    Priority support
-                  </li>
-                </ul>
-                <Link
-                  href="/auth"
-                  className="block text-center w-full bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Start Free, Upgrade Later
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Final CTA */}
-        <section className="max-w-6xl mx-auto px-4 py-16 text-center">
-          <h3 className="font-display text-2xl font-bold text-gray-800 mb-3">
-            Start Capturing Milestones Today
-          </h3>
-          <p className="text-gray-500 mb-6">
-            Free to start. No credit card required.
-          </p>
-          <Link
-            href="/auth"
-            className="inline-block bg-peach-500 hover:bg-peach-600 text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
-          >
+      {/* HERO */}
+      <section className={s.hero}>
+        <div className={s.heroText}>
+          <h1>See the <em>resemblance</em>, cherish the difference</h1>
+          <p>Compare your children&apos;s photos at the same ages. First smile, first steps, first day of school — side by side, instantly.</p>
+          <Link href="/auth" className={s.heroCta}>
             Get Started Free
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </Link>
-        </section>
-      </main>
-
-      <footer className="border-t border-cream-200 bg-white/50">
-        <div className="max-w-6xl mx-auto px-4 py-6 text-center text-sm text-gray-500">
-          <p>
-            Milestone Mirror — Your photos, your memories, your privacy.
-          </p>
-          <div className="flex justify-center gap-4 mt-3">
-            <Link
-              href="/blog"
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              Blog
-            </Link>
-            <Link
-              href="/privacy"
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms"
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              Terms of Service
-            </Link>
+          <p className={s.heroSub}>Free forever for up to 5 frames. No credit card required.</p>
+        </div>
+        <div className={s.heroVisual}>
+          <div className={s.blob1} />
+          <div className={s.blob2} />
+          <div className={s.phoneMockup}>
+            <div className={s.phoneInner}>
+              <div className={s.phoneNotch} />
+              <div className={s.phoneHeader}>Your Frames</div>
+              <div className={s.phoneFrameLabel}>
+                <span>🎒 First Day of School</span>
+                <span style={{ fontSize: "0.75rem", color: "#6B6360" }}>↕</span>
+              </div>
+              <div className={s.phonePhotos}>
+                <div className={s.phonePhoto} style={{ background: "linear-gradient(145deg, #E8C4A0, #D4A07A)" }}>
+                  <div className={s.phonePhotoPlaceholder}>
+                    <span className={s.phonePhotoName}>Emma</span>
+                  </div>
+                </div>
+                <div className={s.phonePhoto} style={{ background: "linear-gradient(145deg, #C4A8D4, #A888BC)" }}>
+                  <div className={s.phonePhotoPlaceholder}>
+                    <span className={s.phonePhotoName}>Liam</span>
+                  </div>
+                </div>
+              </div>
+              <div className={s.phoneFrameLabel} style={{ marginTop: 4 }}>
+                <span>😊 3 Months Old</span>
+                <span style={{ fontSize: "0.75rem", color: "#6B6360" }}>↕</span>
+              </div>
+              <div className={s.phonePhotos} style={{ paddingBottom: 24 }}>
+                <div className={s.phonePhoto} style={{ background: "linear-gradient(145deg, #E8D4A0, #D4BC7A)" }}>
+                  <div className={s.phonePhotoPlaceholder}>
+                    <span className={s.phonePhotoName}>Emma</span>
+                  </div>
+                </div>
+                <div className={s.phonePhoto} style={{ background: "linear-gradient(145deg, #D4A8B8, #BC88A0)" }}>
+                  <div className={s.phonePhotoPlaceholder}>
+                    <span className={s.phonePhotoName}>Liam</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
+
+      {/* SOCIAL PROOF */}
+      <section className={s.proof}>
+        <div className={s.proofInner}>
+          <blockquote className={s.proofQuote}>&ldquo;I always thought my kids looked alike as babies, but seeing them side by side at the same age? It&apos;s uncanny.&rdquo;</blockquote>
+          <cite className={s.proofCite}>— Built by a dad of three who got tired of scrolling through 10,000 photos</cite>
+        </div>
+      </section>
+
+      {/* HOW IT WORKS */}
+      <section className={`${s.section} ${s.howItWorks}`} id="how-it-works">
+        <div className={s.sectionLabel}>How It Works</div>
+        <h2 className={s.sectionTitle}>Three steps. Zero friction.</h2>
+        <p className={s.sectionSubtitle}>No passwords to remember, no complicated setup. Just your photos and your children.</p>
+        <div className={s.steps}>
+          <ScrollFadeIn className={s.step}>
+            <div className={`${s.stepIcon} ${s.stepIcon1}`}>👶</div>
+            <span className={s.stepNum}>Step 1</span>
+            <h3>Add Your Children</h3>
+            <p>Enter each child&apos;s name and birthday. That&apos;s all Milestone Mirror needs to organize your comparisons.</p>
+          </ScrollFadeIn>
+          <ScrollFadeIn className={s.step}>
+            <div className={`${s.stepIcon} ${s.stepIcon2}`}>🖼️</div>
+            <span className={s.stepNum}>Step 2</span>
+            <h3>Create Frames</h3>
+            <p>Name your milestone — &ldquo;First Smile,&rdquo; &ldquo;6 Months Old,&rdquo; &ldquo;Halloween&rdquo; — and upload a photo of each child.</p>
+          </ScrollFadeIn>
+          <ScrollFadeIn className={s.step}>
+            <div className={`${s.stepIcon} ${s.stepIcon3}`}>✨</div>
+            <span className={s.stepNum}>Step 3</span>
+            <h3>Compare Instantly</h3>
+            <p>Swipe between photos on mobile or view side by side on desktop. Share the comparison with family.</p>
+          </ScrollFadeIn>
+        </div>
+      </section>
+
+      {/* SHOWCASE */}
+      <section className={`${s.section} ${s.showcase}`}>
+        <div className={s.sectionLabel}>See It in Action</div>
+        <h2 className={s.sectionTitle}>Built for the moments that matter</h2>
+        <p className={s.sectionSubtitle}>Every frame is a comparison. Every comparison is a memory.</p>
+
+        <ScrollFadeIn className={s.showcaseGrid}>
+          <div className={s.showcaseMockup}>
+            <div className={s.showcaseFrameHeader}>
+              <span className={s.showcaseFrameTitle}>🏥 First Day</span>
+              <div className={s.showcaseFrameIcons}>
+                <span className={s.showcaseFrameIcon}>↗</span>
+                <span className={s.showcaseFrameIcon}>⬇</span>
+              </div>
+            </div>
+            <div className={s.showcasePhotos}>
+              <div className={s.showcasePhoto} style={{ background: "linear-gradient(145deg, #F0D5B8, #E0BFA0)" }}>
+                <span className={s.showcasePhotoName}>Zayan</span>
+              </div>
+              <div className={s.showcasePhoto} style={{ background: "linear-gradient(145deg, #D8C0D8, #C0A0C0)" }}>
+                <span className={s.showcasePhotoName}>Amari</span>
+              </div>
+              <div className={s.showcasePhoto} style={{ background: "linear-gradient(145deg, #B8D0D8, #A0B8C8)" }}>
+                <span className={s.showcasePhotoName}>Sanaya</span>
+              </div>
+            </div>
+          </div>
+          <div className={s.showcaseText}>
+            <h3>Side by side on desktop. Swipe on mobile.</h3>
+            <p>On larger screens, see all your children&apos;s photos at once. On your phone, swipe through each child&apos;s photo in a carousel — the comparison just clicks.</p>
+            <p>Works beautifully whether you have two kids or five.</p>
+          </div>
+        </ScrollFadeIn>
+
+        <hr className={s.showcaseDivider} />
+
+        <ScrollFadeIn className={`${s.showcaseGrid} ${s.showcaseGridReverse}`}>
+          <div className={s.showcaseMockup}>
+            <div className={s.showcaseFrameHeader}>
+              <span className={s.showcaseFrameTitle}>Your Frames</span>
+            </div>
+            <div style={{ display: "flex", gap: 8, flexDirection: "column" }}>
+              <div className={s.frameListItem} style={{ background: "var(--peach)" }}>
+                <span>🏥 First Day</span><span style={{ color: "#6B6360", fontSize: "0.75rem" }}>⠿</span>
+              </div>
+              <div className={s.frameListItem} style={{ background: "#DDE8D6" }}>
+                <span>😊 3 Months Old</span><span style={{ color: "#6B6360", fontSize: "0.75rem" }}>⠿</span>
+              </div>
+              <div className={s.frameListItem} style={{ background: "#D6DEE8" }}>
+                <span>🎃 First Halloween</span><span style={{ color: "#6B6360", fontSize: "0.75rem" }}>⠿</span>
+              </div>
+              <div className={s.frameListItem} style={{ background: "#E8D6D6" }}>
+                <span>🎂 First Birthday</span><span style={{ color: "#6B6360", fontSize: "0.75rem" }}>⠿</span>
+              </div>
+              <div className={s.frameListItem} style={{ background: "#E8E4D6" }}>
+                <span>👣 First Steps</span><span style={{ color: "#6B6360", fontSize: "0.75rem" }}>⠿</span>
+              </div>
+            </div>
+          </div>
+          <div className={s.showcaseText}>
+            <h3>Drag, drop, reorder. Your story, your way.</h3>
+            <p>Arrange your milestone frames however tells your family&apos;s story best. Chronological, by season, by resemblance — you decide.</p>
+            <p>Share individual frames with grandparents, or download clean side-by-side images to post anywhere.</p>
+          </div>
+        </ScrollFadeIn>
+      </section>
+
+      {/* FEATURES */}
+      <section className={`${s.section} ${s.features}`} id="features">
+        <div className={s.sectionLabel}>Why Parents Love It</div>
+        <h2 className={s.sectionTitle}>Simple by design</h2>
+        <p className={s.sectionSubtitle}>Not a photo album. Not a social network. Just comparison, done perfectly.</p>
+        <div className={s.featuresGrid}>
+          <ScrollFadeIn className={s.featureCard}>
+            <span className={s.featureEmoji}>🔐</span>
+            <h3>Private & Encrypted</h3>
+            <p>Your photos are encrypted and only accessible to you. No social features, no ads, no data selling. Ever.</p>
+          </ScrollFadeIn>
+          <ScrollFadeIn className={s.featureCard}>
+            <span className={s.featureEmoji}>⚡</span>
+            <h3>No Password Needed</h3>
+            <p>Sign in with Google, Apple, or a magic code sent to your email. One less password to forget.</p>
+          </ScrollFadeIn>
+          <ScrollFadeIn className={s.featureCard}>
+            <span className={s.featureEmoji}>📱</span>
+            <h3>Mobile First</h3>
+            <p>Upload straight from your camera roll. Swipe through comparisons with your thumb. Built for how parents actually use their phones.</p>
+          </ScrollFadeIn>
+          <ScrollFadeIn className={s.featureCard}>
+            <span className={s.featureEmoji}>🎯</span>
+            <h3>Any Age, Any Milestone</h3>
+            <p>Not just babies. Compare school photos, sports pictures, holiday portraits — at any age, for any occasion.</p>
+          </ScrollFadeIn>
+        </div>
+      </section>
+
+      {/* PRICING */}
+      <section className={`${s.section} ${s.pricing}`} id="pricing">
+        <div className={s.sectionLabel}>Pricing</div>
+        <h2 className={s.sectionTitle}>Start free. Grow as they do.</h2>
+        <p className={s.sectionSubtitle}>Create your first milestone comparisons at no cost.</p>
+        <div className={s.pricingCards}>
+          <ScrollFadeIn className={s.pricingCard}>
+            <h3>Free</h3>
+            <div className={s.pricingPrice}>$0 <span>/ forever</span></div>
+            <span className={s.pricingAnnual}>&nbsp;</span>
+            <ul className={s.pricingFeatures}>
+              <li>Up to <strong>5 frames</strong></li>
+              <li>Up to <strong>2 children</strong></li>
+              <li>Swipe & side-by-side comparison</li>
+              <li>Drag & drop reorder</li>
+              <li>Share & download frames</li>
+            </ul>
+            <Link href="/auth" className={`${s.pricingBtn} ${s.pricingBtnOutline}`}>Get Started</Link>
+          </ScrollFadeIn>
+          <ScrollFadeIn className={`${s.pricingCard} ${s.pricingCardPopular}`}>
+            <div className={s.popularBadge}>Most Popular</div>
+            <h3>Premium</h3>
+            <div className={s.pricingPrice}>$4.99 <span>/ month</span></div>
+            <span className={s.pricingAnnual}>or $49.99/year — save 17%</span>
+            <ul className={s.pricingFeatures}>
+              <li><strong>Unlimited</strong> frames</li>
+              <li><strong>Unlimited</strong> children</li>
+              <li>Everything in Free</li>
+              <li>Priority support</li>
+            </ul>
+            <Link href="/auth" className={`${s.pricingBtn} ${s.pricingBtnFill}`}>Start Free, Upgrade Later</Link>
+          </ScrollFadeIn>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className={s.finalCta}>
+        <div className={s.finalCtaBg} />
+        <div className={s.finalCtaContent}>
+          <h2>Start capturing milestones today</h2>
+          <p>Free to start. No credit card required.</p>
+          <Link href="/auth" className={s.finalCtaLink}>
+            Get Started Free
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </Link>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className={s.footer}>
+        <div className={s.footerLinks}>
+          <Link href="/blog" className={s.footerLink}>Blog</Link>
+          <Link href="/privacy" className={s.footerLink}>Privacy Policy</Link>
+          <Link href="/terms" className={s.footerLink}>Terms of Service</Link>
+        </div>
+        <p>Milestone Mirror — Your photos, your memories, your privacy.</p>
       </footer>
     </div>
   );

@@ -8,27 +8,32 @@ export function AuthNavButton() {
 
   if (isLoading) {
     return (
-      <div className="w-20 h-9 bg-cream-200 rounded-lg animate-pulse" />
+      <div style={{ width: 100, height: 40, background: "#F5D0B4", borderRadius: 50, opacity: 0.5 }} />
     );
   }
 
+  const style: React.CSSProperties = {
+    background: "#E8845C",
+    color: "white",
+    padding: "10px 24px",
+    borderRadius: 50,
+    fontWeight: 600,
+    fontSize: "0.95rem",
+    textDecoration: "none",
+    transition: "background 0.2s, transform 0.2s",
+  };
+
   if (user) {
     return (
-      <Link
-        href="/app"
-        className="bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-      >
+      <Link href="/app" style={style}>
         Go to App
       </Link>
     );
   }
 
   return (
-    <Link
-      href="/auth"
-      className="bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-    >
-      Sign In
+    <Link href="/auth" style={style}>
+      Get Started
     </Link>
   );
 }
