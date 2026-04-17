@@ -177,7 +177,7 @@ export function FrameCard({
               </div>
             )}
           </div>
-          {frame.images.length > 0 && (
+          {frame.images.length > 0 && user?.tier === "premium" && (
             <button
               onClick={handleDownload}
               disabled={isDownloading}
