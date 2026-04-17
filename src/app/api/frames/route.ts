@@ -3,6 +3,7 @@ import { initializeLucia } from "@/lib/auth";
 import { generateId } from "@/lib/utils";
 import { getCloudflareEnv, D1Database } from "@/lib/d1-types";
 import { canCreateFrame, Tier } from "@/lib/tier-limits";
+import { FRAME_COLORS, FrameColor } from "@/lib/frame-colors";
 
 interface FrameRequest {
   title: string;
@@ -150,12 +151,15 @@ export async function POST(request: NextRequest) {
 
   const displayOrder = (lastFrame?.max_order ?? -1) + 1;
 
+  const colorKeys = Object.keys(FRAME_COLORS) as FrameColor[];
+  const autoColor = colorKeys[(frameCount?.count ?? 0) % colorKeys.length];
+
   const frameId = generateId();
   await db
     .prepare(
       "INSERT INTO frames (id, user_id, title, description, color, display_order) VALUES (?, ?, ?, ?, ?, ?)"
     )
-    .bind(frameId, user.id, title, description || null, color || "peach", displayOrder)
+    .bind(frameId, user.id, title, description || null, color || autoColor, displayOrder)
     .run();
 
   return NextResponse.json({
