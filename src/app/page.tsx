@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import { AuthNavButton } from "@/components/AuthNavButton";
 
 export const metadata = {
@@ -21,7 +20,7 @@ export default function Home() {
       <header className="bg-white/80 backdrop-blur-sm border-b border-cream-200">
         <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Image src="/icon.svg" alt="Milestone Mirror" width={56} height={56} />
+            <img src="/icon.svg" alt="Milestone Mirror" width={56} height={56} />
             <h1 className="font-display text-xl font-bold text-gray-800">
               Milestone Mirror
             </h1>
@@ -42,7 +41,7 @@ export default function Home() {
         {/* Hero */}
         <section className="max-w-6xl mx-auto px-4 py-20 text-center">
           <div className="mb-8">
-            <Image
+            <img
               src="/icon.svg"
               alt="Milestone Mirror"
               width={80}
