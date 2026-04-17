@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    optimizeCss: true,
+  },
   images: {
     remotePatterns: [
       {
@@ -28,17 +31,6 @@ const nextConfig: NextConfig = {
         hostname: "pub-*.r2.dev",
       },
     ],
-  },
-  webpack: (config, { isServer }) => {
-    // Handle face-api.js Node.js dependencies for browser
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-        encoding: false,
-      };
-    }
-    return config;
   },
 };
 
