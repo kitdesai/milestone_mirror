@@ -1,20 +1,21 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@/contexts/AuthContext";
+import { AuthNavButton } from "@/components/AuthNavButton";
+
+export const metadata = {
+  title: "Milestone Mirror — Compare Your Children at the Same Ages",
+  description:
+    "Create milestone frames to compare your children's photos side by side. See the resemblance, cherish the differences.",
+  openGraph: {
+    title: "Milestone Mirror — Compare Your Children at the Same Ages",
+    description:
+      "Create milestone frames to compare your children's photos side by side.",
+    url: "https://milestonemirror.com",
+    type: "website",
+  },
+};
 
 export default function Home() {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-cream-50 to-peach-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-peach-100 border-t-peach-500 rounded-full animate-spin" />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-cream-50 to-peach-50">
       <header className="bg-white/80 backdrop-blur-sm border-b border-cream-200">
@@ -32,23 +33,7 @@ export default function Home() {
             >
               Blog
             </Link>
-            {user ? (
-              <Link
-                href="/app"
-                className="bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-              >
-                Go to App
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/auth"
-                  className="bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
-                >
-                  Sign In
-                </Link>
-              </>
-            )}
+            <AuthNavButton />
           </div>
         </div>
       </header>
@@ -75,10 +60,10 @@ export default function Home() {
               resemblance and differences, beautifully.
             </p>
             <Link
-              href={user ? "/app" : "/auth"}
+              href="/auth"
               className="inline-block bg-peach-500 hover:bg-peach-600 text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
             >
-              {user ? "Open App" : "Get Started Free"}
+              Get Started Free
             </Link>
           </div>
         </section>
@@ -250,10 +235,10 @@ export default function Home() {
                   </li>
                 </ul>
                 <Link
-                  href={user ? "/app" : "/auth"}
+                  href="/auth"
                   className="block text-center w-full border-2 border-cream-200 hover:border-peach-400 text-gray-700 font-medium py-2 px-4 rounded-lg transition-colors"
                 >
-                  {user ? "Go to App" : "Get Started"}
+                  Get Started
                 </Link>
               </div>
 
@@ -299,10 +284,10 @@ export default function Home() {
                   </li>
                 </ul>
                 <Link
-                  href={user ? "/app/settings" : "/auth"}
+                  href="/auth"
                   className="block text-center w-full bg-peach-500 hover:bg-peach-600 text-white font-medium py-2 px-4 rounded-lg transition-colors"
                 >
-                  {user ? "Upgrade Now" : "Start Free, Upgrade Later"}
+                  Start Free, Upgrade Later
                 </Link>
               </div>
             </div>
@@ -318,10 +303,10 @@ export default function Home() {
             Free to start. No credit card required.
           </p>
           <Link
-            href={user ? "/app" : "/auth"}
+            href="/auth"
             className="inline-block bg-peach-500 hover:bg-peach-600 text-white font-medium py-3 px-8 rounded-lg text-lg transition-colors"
           >
-            {user ? "Open App" : "Get Started Free"}
+            Get Started Free
           </Link>
         </section>
       </main>
