@@ -23,9 +23,6 @@ export function ChildList({ childProfiles, onEdit, onDelete }: ChildListProps) {
   return (
     <div className="space-y-3">
       {childProfiles.map((child) => {
-        const birthDate = new Date(child.birthDate);
-        const currentAge = calculateAge(birthDate, new Date());
-
         return (
           <div
             key={child.id}
@@ -33,9 +30,11 @@ export function ChildList({ childProfiles, onEdit, onDelete }: ChildListProps) {
           >
             <div>
               <h4 className="font-medium text-gray-800">{child.name}</h4>
-              <p className="text-sm text-gray-500">
-                Born {formatDisplayDate(child.birthDate)} ({currentAge} old)
-              </p>
+              {child.birthDate && (
+                <p className="text-sm text-gray-500">
+                  Born {formatDisplayDate(child.birthDate)} ({calculateAge(new Date(child.birthDate), new Date())} old)
+                </p>
+              )}
             </div>
             <div className="flex gap-2">
               <button
