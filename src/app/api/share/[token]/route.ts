@@ -62,15 +62,11 @@ export async function GET(
       childName: string;
     }>();
 
-  // Build public R2 URLs for images
-  const r2PublicUrl = env.R2_PUBLIC_URL?.replace(/\/+$/, "");
+  // All images served through proxy routes (no direct R2 access)
   const images = (imagesResult.results || []).map((img) => ({
     id: img.id,
     childName: img.childName,
     caption: img.caption,
-    publicUrl: r2PublicUrl
-      ? `${r2PublicUrl}/${img.imageKey}`
-      : img.imageUrl,
     proxyUrl: `/api/share/${token}/image/${img.id}`,
   }));
 

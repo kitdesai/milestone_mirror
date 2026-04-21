@@ -11,12 +11,6 @@ export function toImageApiPath(key: string): string {
   return `/api/images/${encodedKey}`;
 }
 
-function buildPublicImageUrl(key: string): string | null {
-  const baseUrl = process.env.R2_PUBLIC_URL?.trim();
-  if (!baseUrl) return null;
-  return `${baseUrl.replace(/\/+$/, "")}/${key}`;
-}
-
 export async function uploadImage(
   bucket: R2Bucket,
   file: File | ArrayBuffer,
@@ -33,14 +27,11 @@ export async function uploadImage(
   await bucket.put(key, body, {
     httpMetadata: {
       contentType,
-      cacheControl: "public, max-age=31536000", // 1 year
+      cacheControl: "private, max-age=31536000",
     },
   });
 
-  // Prefer configured public URL; fallback to app API route for local/private access.
-  const publicUrl = buildPublicImageUrl(key) ?? toImageApiPath(key);
-
-  return { key, url: publicUrl };
+  return { key, url: toImageApiPath(key) };
 }
 
 export async function deleteImage(

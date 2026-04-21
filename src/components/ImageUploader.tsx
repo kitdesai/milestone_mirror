@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { resizeImage } from "@/lib/image-resize";
 
 interface ImageUploaderProps {
   frameId: string;
@@ -85,8 +86,11 @@ export function ImageUploader({
     setError(null);
 
     try {
+      // Resize image before upload (max 1200px, JPEG 85%)
+      const resizedFile = await resizeImage(file);
+
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", resizedFile);
       formData.append("frameId", frameId);
       formData.append("childId", childId);
 

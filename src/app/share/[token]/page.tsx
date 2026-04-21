@@ -15,32 +15,17 @@ async function getSharedFrameMeta(token: string) {
 
     const frame = await db
       .prepare(
-        "SELECT f.id, f.title, f.description, f.share_image_key FROM frames f WHERE f.share_token = ?"
+        "SELECT f.title, f.description, f.share_image_key FROM frames f WHERE f.share_token = ?"
       )
       .bind(token)
-      .first<{ id: string; title: string; description: string | null; share_image_key: string | null }>();
+      .first<{ title: string; description: string | null; share_image_key: string | null }>();
 
     if (!frame) return null;
 
-    const r2PublicUrl = (
-      env as { R2_PUBLIC_URL?: string }
-    ).R2_PUBLIC_URL?.replace(/\/+$/, "");
-
-    // Prefer composite share image, fall back to first photo
-    let ogImageUrl: string | null = null;
-    if (frame.share_image_key && r2PublicUrl) {
-      ogImageUrl = `${r2PublicUrl}/${frame.share_image_key}`;
-    } else {
-      const firstImage = await db
-        .prepare(
-          "SELECT fi.image_key FROM frame_images fi WHERE fi.frame_id = ? ORDER BY fi.display_order LIMIT 1"
-        )
-        .bind(frame.id)
-        .first<{ image_key: string }>();
-      if (firstImage && r2PublicUrl) {
-        ogImageUrl = `${r2PublicUrl}/${firstImage.image_key}`;
-      }
-    }
+    // Use the OG image proxy route (publicly accessible for social crawlers)
+    const ogImageUrl = frame.share_image_key
+      ? `https://milestonemirror.com/api/share/${token}/og-image`
+      : null;
 
     return {
       title: frame.title,

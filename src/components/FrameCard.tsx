@@ -65,9 +65,6 @@ export function FrameCard({
     }
   };
   const [imageError, setImageError] = useState<Set<string>>(new Set());
-  const [apiFallbackImageIds, setApiFallbackImageIds] = useState<Set<string>>(
-    new Set()
-  );
 
   // Swipe handling
   const touchStartX = useRef<number | null>(null);
@@ -120,17 +117,8 @@ export function FrameCard({
 
   const getImageSrc = (image: typeof currentImage) => {
     if (!image) return "";
-    const useApiFallback = apiFallbackImageIds.has(image.id);
-    return useApiFallback
-      ? toImageApiPath(image.imageKey)
-      : image.imageUrl?.startsWith("http://") ||
-          image.imageUrl?.startsWith("https://") ||
-          image.imageUrl?.startsWith("/api/images/")
-        ? image.imageUrl
-        : toImageApiPath(image.imageKey);
+    return toImageApiPath(image.imageKey);
   };
-
-  const currentImageSrc = getImageSrc(currentImage);
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-cream-200 overflow-hidden">
@@ -268,16 +256,6 @@ export function FrameCard({
                     unoptimized
                     className="object-cover"
                     onError={() => {
-                      if (
-                        !apiFallbackImageIds.has(image.id) &&
-                        (image.imageUrl?.startsWith("http://") ||
-                          image.imageUrl?.startsWith("https://"))
-                      ) {
-                        setApiFallbackImageIds(
-                          (prev) => new Set(prev).add(image.id)
-                        );
-                        return;
-                      }
                       setImageError((prev) => new Set(prev).add(image.id));
                     }}
                   />
@@ -360,16 +338,6 @@ export function FrameCard({
                     unoptimized
                     className="object-cover"
                     onError={() => {
-                      if (
-                        !apiFallbackImageIds.has(image.id) &&
-                        (image.imageUrl?.startsWith("http://") ||
-                          image.imageUrl?.startsWith("https://"))
-                      ) {
-                        setApiFallbackImageIds(
-                          (prev) => new Set(prev).add(image.id)
-                        );
-                        return;
-                      }
                       setImageError((prev) => new Set(prev).add(image.id));
                     }}
                   />

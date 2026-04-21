@@ -6,7 +6,7 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 ENVIRONMENT = "production"
-R2_PUBLIC_URL = "https://pub-c7918669aef34e23997a8d45104363df.r2.dev"
+# R2_PUBLIC_URL removed — all images served through authenticated API routes
 STRIPE_MONTHLY_PRICE_ID = "price_1TLl0T2MjgGWTccuqYI9oBIM"
 STRIPE_YEARLY_PRICE_ID = "price_1TLl0W2MjgGWTccuCU4syTxx"
 

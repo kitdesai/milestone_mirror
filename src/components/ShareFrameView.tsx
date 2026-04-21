@@ -7,7 +7,6 @@ import Link from "next/link";
 interface ShareImage {
   id: string;
   childName: string;
-  publicUrl: string;
   proxyUrl: string;
   caption: string | null;
 }
@@ -158,7 +157,7 @@ export function ShareFrameView({ token }: { token: string }) {
                     }`}
                   >
                     <img
-                      src={image.publicUrl}
+                      src={image.proxyUrl}
                       alt={`${image.childName}'s photo`}
                       className="w-full h-full object-cover"
                     />
@@ -190,7 +189,7 @@ export function ShareFrameView({ token }: { token: string }) {
                     className="relative aspect-[3/4] bg-cream-50 flex-1"
                   >
                     <img
-                      src={image.publicUrl}
+                      src={image.proxyUrl}
                       alt={`${image.childName}'s photo`}
                       className="w-full h-full object-cover"
                     />
