@@ -12,7 +12,6 @@ interface ChildFormProps {
 
 export function ChildForm({ onAdd, onCancel, editingChild }: ChildFormProps) {
   const [name, setName] = useState(editingChild?.name || "");
-  const [birthDate, setBirthDate] = useState(editingChild?.birthDate || "");
   const [error, setError] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -24,27 +23,15 @@ export function ChildForm({ onAdd, onCancel, editingChild }: ChildFormProps) {
       return;
     }
 
-    if (!birthDate) {
-      setError("Please enter a birth date");
-      return;
-    }
-
-    const birthDateObj = new Date(birthDate);
-    if (birthDateObj > new Date()) {
-      setError("Birth date cannot be in the future");
-      return;
-    }
-
     const child: Child = {
       id: editingChild?.id || generateId(),
       name: name.trim(),
-      birthDate,
+      birthDate: editingChild?.birthDate || "",
       createdAt: editingChild?.createdAt || new Date().toISOString(),
     };
 
     onAdd(child);
     setName("");
-    setBirthDate("");
   };
 
   return (
@@ -70,20 +57,7 @@ export function ChildForm({ onAdd, onCancel, editingChild }: ChildFormProps) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter child's name"
-            className="w-full px-4 py-2 border border-cream-200 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
-          />
-        </div>
-
-        <div>
-          <label htmlFor="birthDate" className="block text-sm font-medium text-gray-700 mb-1">
-            Birth Date
-          </label>
-          <input
-            type="date"
-            id="birthDate"
-            value={birthDate}
-            onChange={(e) => setBirthDate(e.target.value)}
-            max={new Date().toISOString().split("T")[0]}
+            autoFocus
             className="w-full px-4 py-2 border border-cream-200 rounded-lg focus:ring-2 focus:ring-peach-400 focus:border-transparent outline-none transition-all"
           />
         </div>

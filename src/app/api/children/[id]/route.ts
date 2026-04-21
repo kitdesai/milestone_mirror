@@ -4,7 +4,7 @@ import { getCloudflareEnv, D1Database } from "@/lib/d1-types";
 
 interface ChildRequest {
   name: string;
-  birthDate: string;
+  birthDate?: string;
 }
 
 export const runtime = "edge";
@@ -47,7 +47,7 @@ export async function PUT(
     .prepare(
       "UPDATE children SET name = ?, birth_date = ?, updated_at = datetime('now') WHERE id = ? AND user_id = ?"
     )
-    .bind(name, birthDate, childId, user.id)
+    .bind(name, birthDate || null, childId, user.id)
     .run();
 
   if (result.meta.changes === 0) {

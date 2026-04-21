@@ -88,9 +88,9 @@ export async function POST(request: NextRequest) {
 
   const { name, birthDate }: ChildRequest = await request.json();
 
-  if (!name || !birthDate) {
+  if (!name) {
     return NextResponse.json(
-      { error: "Name and birth date are required" },
+      { error: "Name is required" },
       { status: 400 }
     );
   }
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     .prepare(
       "INSERT INTO children (id, user_id, name, birth_date) VALUES (?, ?, ?, ?)"
     )
-    .bind(childId, user.id, name, birthDate)
+    .bind(childId, user.id, name, birthDate || null)
     .run();
 
   return NextResponse.json({
