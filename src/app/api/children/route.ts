@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     .prepare(
       "INSERT INTO children (id, user_id, name, birth_date) VALUES (?, ?, ?, ?)"
     )
-    .bind(childId, user.id, name, birthDate || null)
+    .bind(childId, user.id, name, birthDate || "")
     .run();
 
   return NextResponse.json({

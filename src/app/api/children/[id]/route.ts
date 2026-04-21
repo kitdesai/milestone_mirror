@@ -47,7 +47,7 @@ export async function PUT(
     .prepare(
       "UPDATE children SET name = ?, birth_date = ?, updated_at = datetime('now') WHERE id = ? AND user_id = ?"
     )
-    .bind(name, birthDate || null, childId, user.id)
+    .bind(name, birthDate || "", childId, user.id)
     .run();
 
   if (result.meta.changes === 0) {
