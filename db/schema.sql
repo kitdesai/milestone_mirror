@@ -63,6 +63,14 @@ CREATE TABLE IF NOT EXISTS verification_codes (
   created_at TEXT DEFAULT (datetime('now'))
 );
 
+-- Failed sign-in code attempts (brute-force lockout state)
+CREATE TABLE IF NOT EXISTS verification_attempts (
+  email TEXT PRIMARY KEY,
+  failed_count INTEGER NOT NULL DEFAULT 0,
+  locked_until INTEGER,
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+
 -- OAuth accounts (for Apple Sign In, extensible to other providers)
 CREATE TABLE IF NOT EXISTS oauth_accounts (
   provider TEXT NOT NULL,
@@ -93,6 +101,7 @@ CREATE INDEX IF NOT EXISTS idx_frame_images_frame_id ON frame_images(frame_id);
 CREATE INDEX IF NOT EXISTS idx_frame_images_child_id ON frame_images(child_id);
 CREATE INDEX IF NOT EXISTS idx_verification_codes_email ON verification_codes(email);
 CREATE INDEX IF NOT EXISTS idx_verification_codes_expires ON verification_codes(expires_at);
+CREATE INDEX IF NOT EXISTS idx_verification_attempts_updated ON verification_attempts(updated_at);
 CREATE INDEX IF NOT EXISTS idx_oauth_accounts_user_id ON oauth_accounts(user_id);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_frames_share_token ON frames(share_token);
 CREATE INDEX IF NOT EXISTS idx_subscriptions_user_id ON subscriptions(user_id);

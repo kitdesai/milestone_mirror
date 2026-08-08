@@ -30,8 +30,21 @@ export async function POST(request: NextRequest) {
 
     const normalizedEmail = email.toLowerCase().trim();
 
-    const valid = await verifyCode(db, normalizedEmail, code.trim());
-    if (!valid) {
+    const result = await verifyCode(db, normalizedEmail, code.trim());
+    if (!result.ok) {
+      if (result.locked) {
+        const retryAfter = result.retryAfterSeconds ?? 0;
+        const minutes = Math.max(1, Math.ceil(retryAfter / 60));
+        return NextResponse.json(
+          {
+            error: `Too many incorrect codes. Try again in ${minutes} minute${
+              minutes === 1 ? "" : "s"
+            }.`,
+          },
+          { status: 429, headers: { "Retry-After": String(retryAfter) } }
+        );
+      }
+
       return NextResponse.json(
         { error: "Invalid or expired code" },
         { status: 401 }
